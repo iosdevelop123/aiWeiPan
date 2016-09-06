@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Personalinformation</key>
+	<array>
+		<string>昵称</string>
+		<string>用户名</string>
+		<string>修改密码</string>
+		<string>证件号</string>
+	</array>
+	<key>titleArray</key>
+	<array>
+		<string>可用余额</string>
+		<string>个人信息</string>
+		<string> 启动密码</string>
+	</array>
+	<key>imageArray</key>
+	<array>
+		<string>keyongyue</string>
+		<string>gerenxinxi</string>
+		<string>shouzhi</string>
+	</array>
+	<key>launchImages</key>
+	<array>
+		<string>GuideImage1_%dh.png</string>
+		<string>GuideImage2_%dh.png</string>
+		<string>GuideImage3_%dh.png</string>
+	</array>
+	<key>buyNum</key>
+	<array>
+		<string>1 手</string>
+		<string>2 手</string>
+		<string>3 手</string>
+		<string>4 手</string>
+		<string>5 手</string>
+		<string>6 手</string>
+		<string>7 手</string>
+		<string>8 手</string>
+		<string>9 手</string>
+		<string>10 手</string>
+	</array>
+	<key>Days</key>
+	<array>
+		<string>前一天</string>
+		<string>前两天</string>
+		<string>前三天</string>
+		<string>前四天</string>
+		<string>前五天</string>
+		<string>前六天</string>
+		<string>前七天</string>
+	</array>
+</dict>
+</plist>

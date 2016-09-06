@@ -1,0 +1,35 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "40385741-6288-1b4e-b2d4-0753916a06b9++6416",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+    "40385741-6288-1b4e-b2d4-0753916a06b9++4437" : {
+
+    },
+    "40385741-6288-1b4e-b2d4-0753916a06b9++6416" : {
+
+    }
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "40385741-6288-1b4e-b2d4-0753916a06b9++4437" : 0,
+    "40385741-6288-1b4e-b2d4-0753916a06b9++6416" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "BEFA7487-08D9-4632-B530-4EE6BC50D9BF",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "40385741-6288-1b4e-b2d4-0753916a06b9++4437" : "Ejinrong_06_16\/",
+    "40385741-6288-1b4e-b2d4-0753916a06b9++6416" : "aiCaoPan_06_20\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "aiCaoPan",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "aiCaoPan.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/139.196.32.138:8080\/svn\/ios",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "40385741-6288-1b4e-b2d4-0753916a06b9++4437"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/139.196.32.138:8080\/svn\/ios",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "40385741-6288-1b4e-b2d4-0753916a06b9++6416"
+    }
+  ]
+}

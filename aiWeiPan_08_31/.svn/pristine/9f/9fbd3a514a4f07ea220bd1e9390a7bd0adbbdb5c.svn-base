@@ -1,0 +1,125 @@
+//
+//  AppDelegate.m
+//  Ejinrong
+//
+//  Created by jr on 15/9/16.
+//  Copyright (c) 2015年 pan. All rights reserved.
+//
+#import "AppDelegate.h"
+#import "MainViewController.h"
+#import "UserGuideViewController.h"
+#import <notify.h>
+#import "LoginCheckNavigationController.h"
+#import "WebRequest.h"
+#import "GDataXMLNode.h"
+#import "AFNetworking.h"
+//获取IP地址
+#import <ifaddrs.h>
+#import <arpa/inet.h>
+@interface AppDelegate ()<UIAlertViewDelegate>
+@end
+@implementation AppDelegate
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [self getiPhoneIP];
+    //获取商品列表 
+    NSMutableDictionary* dic = [[NSMutableDictionary alloc]initWithObjectsAndKeys:@"b4026263-704e-4e12-a64d-f79cb42962cc",@"TaskGuid",@"HBList",@"DataType",nil];
+    WebRequest* web = [[WebRequest alloc]init];
+    [web webRequestWithDataDic:dic requestType:kRequestTypeTransformData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        if (error!=nil) {
+            NSLog(@"获取商品列表失败");
+        }else{
+            GDataXMLDocument* document = [[GDataXMLDocument alloc]initWithData:responseObject options:0 error:nil];
+            GDataXMLElement* element = [document rootElement];
+            NSArray *array = [element children];
+            NSString *eleString;
+            for (int i = 0; i<array.count; i++) {
+                GDataXMLElement* ele = [array objectAtIndex:i];
+                eleString = [ele stringValue];
+            }
+            if ([@"" isEqualToString:eleString]) {
+                UIAlertView *alart = [[UIAlertView alloc] initWithTitle:@"商品列表加载失败，请重启软件" message:nil delegate:self cancelButtonTitle:@"关闭" otherButtonTitles:nil];
+                [alart show];
+            }else{
+                NSData *data = [eleString dataUsingEncoding:NSUTF8StringEncoding];
+                NSArray *bhArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                NSLog(@"%@",bhArray);
+                [[NSUserDefaults standardUserDefaults] setObject:bhArray forKey:@"BHList"];
+            }
+        }
+    }];
+    //------ 判断是不是第一次启动应用 ------
+    if(![[NSUserDefaults standardUserDefaults] boolForKey:@"firstLaunch"]){
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"firstLaunch"];
+        //------ 如果是第一次启动的话,使用UserGuideViewController (用户引导页面) 作为根视图 ------
+        self.window.rootViewController = [[UserGuideViewController alloc] init];
+    } else {
+        //------ 如果不是第一次启动的话 ------
+        BOOL isLogin = [[NSUserDefaults standardUserDefaults] boolForKey:@"login"];
+        id code = [[NSUserDefaults standardUserDefaults] objectForKey:@"code"];
+        if (isLogin == YES&&code!=nil) { //登录了，使用LoginCheckNavigationController作为根视图，验证手势密码
+            self.window.rootViewController = [[LoginCheckNavigationController alloc] init];
+        }else{ //未登录，使用mainViewController作为根视图,进入主页面
+            self.window.rootViewController = [[MainViewController alloc] init];
+        }
+    }
+    [self.window makeKeyAndVisible];
+    return YES;
+}
+- (void)applicationWillResignActive:(UIApplication *)application {}
+
+#pragma mark 进入后台
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+    //设置永久后台运行
+    UIApplication *app =  [UIApplication sharedApplication];
+    __block UIBackgroundTaskIdentifier bgTask;
+    bgTask = [app beginBackgroundTaskWithExpirationHandler:^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (bgTask != UIBackgroundTaskInvalid) {
+                bgTask = UIBackgroundTaskInvalid;
+            }
+        });
+    }];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (bgTask != UIBackgroundTaskInvalid) {
+                bgTask = UIBackgroundTaskInvalid;
+            }
+        });
+    });
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application {}
+- (void)applicationDidBecomeActive:(UIApplication *)application {}
+- (void)applicationWillTerminate:(UIApplication *)application {}
+
+#pragma mark 获取ip地址
+-(void)getiPhoneIP{
+    NSString *address = @"获取ip地址出错";
+    struct ifaddrs *interfaces = NULL;
+    struct ifaddrs *temp_addr = NULL;
+    int success = 0;
+    success = getifaddrs(&interfaces);
+    
+    if (success == 0) { // 0 表示获取成功
+        temp_addr = interfaces;
+        while (temp_addr != NULL) {
+            if( temp_addr->ifa_addr->sa_family == AF_INET) {
+                // Check if interface is en0 which is the wifi connection on the iPhone
+                if ([[NSString stringWithUTF8String:temp_addr->ifa_name] isEqualToString:@"en0"]) {
+                    // Get NSString from C String
+                    address = [NSString stringWithUTF8String:inet_ntoa(((struct sockaddr_in *)temp_addr->ifa_addr)->sin_addr)];
+                }
+            }
+            temp_addr = temp_addr->ifa_next;
+        }
+    }
+    freeifaddrs(interfaces);
+    NSUserDefaults *iPhoneIP = [NSUserDefaults standardUserDefaults];
+    [iPhoneIP setObject:address forKey:@"iPhoneIP"];
+}
+
+#pragma mark 禁用第三方输入法
+- (BOOL)application:(UIApplication *)application shouldAllowExtensionPointIdentifier:(NSString *)extensionPointIdentifier{
+    return NO;
+}
+@end

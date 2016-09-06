@@ -1,0 +1,52 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "40385741-6288-1b4e-b2d4-0753916a06b9++4437+++154352C",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+    "40385741-6288-1b4e-b2d4-0753916a06b9++3216+++5B92324" : {
+
+    },
+    "40385741-6288-1b4e-b2d4-0753916a06b9++3216+++15A6819" : {
+
+    },
+    "40385741-6288-1b4e-b2d4-0753916a06b9++4437+++154352C" : {
+
+    }
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "40385741-6288-1b4e-b2d4-0753916a06b9++4437+++154352C" : 0,
+    "40385741-6288-1b4e-b2d4-0753916a06b9++3216+++15A6819" : 0,
+    "D0E02B688D92E84EA5644C9728226B050C3939E4+++EDEE252" : 0,
+    "40385741-6288-1b4e-b2d4-0753916a06b9++3216+++5B92324" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "96C531D7-9B94-48ED-9091-636243CC5FF6",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "40385741-6288-1b4e-b2d4-0753916a06b9++4437+++154352C" : "Ejinrong_06_16\/",
+    "40385741-6288-1b4e-b2d4-0753916a06b9++3216+++15A6819" : "Ejinrong_01_25\/",
+    "D0E02B688D92E84EA5644C9728226B050C3939E4+++EDEE252" : "",
+    "40385741-6288-1b4e-b2d4-0753916a06b9++3216+++5B92324" : "Ejinrong_01_25\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "eCaoPan",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "eCaoPan.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/139.196.32.138:8080\/svn\/ios",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "40385741-6288-1b4e-b2d4-0753916a06b9++3216+++15A6819"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/139.196.32.138:8080\/svn\/ios",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "40385741-6288-1b4e-b2d4-0753916a06b9++3216+++5B92324"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/139.196.32.138:8080\/svn\/ios",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "40385741-6288-1b4e-b2d4-0753916a06b9++4437+++154352C"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/iosdevelop123\/ecaopan.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "D0E02B688D92E84EA5644C9728226B050C3939E4+++EDEE252"
+    }
+  ]
+}
