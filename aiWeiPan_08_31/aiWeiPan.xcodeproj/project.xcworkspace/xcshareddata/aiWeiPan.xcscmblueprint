@@ -6,11 +6,13 @@
     }
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
-    "40385741-6288-1b4e-b2d4-0753916a06b9++6416" : 0
+    "40385741-6288-1b4e-b2d4-0753916a06b9++6416" : 0,
+    "A8EAA0A1C647E1D7FE27C4F389746D79B905D1AF" : 0
   },
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "48BC8C4A-9B7A-429E-A0A4-33471DABE1AD",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
-    "40385741-6288-1b4e-b2d4-0753916a06b9++6416" : "aiCaoPan_06_20\/"
+    "40385741-6288-1b4e-b2d4-0753916a06b9++6416" : "aiCaoPan_06_20\/",
+    "A8EAA0A1C647E1D7FE27C4F389746D79B905D1AF" : ""
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "aiWeiPan",
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,
@@ -20,6 +22,11 @@
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/139.196.32.138:8080\/svn\/ios",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "40385741-6288-1b4e-b2d4-0753916a06b9++6416"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/iosdevelop123\/aiWeiPan.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "A8EAA0A1C647E1D7FE27C4F389746D79B905D1AF"
     }
   ]
 }

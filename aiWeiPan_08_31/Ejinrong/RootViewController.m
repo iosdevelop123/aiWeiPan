@@ -395,29 +395,7 @@ static int const _SERVER_PORT = 2012;
                 }
             }
             [_tableView reloadData];
-            //------ 第一次进入的时候根据美原油的看多看空刷新按钮 ------
-//            BOOL login = [[NSUserDefaults standardUserDefaults] boolForKey:@"login"];
-//            if (login) {
-//                //------ 根据选择商品改变按钮的名字 ------
-//                if (_tableViewDataArray.count != 0) {
-//                    for (holdPositionModel*model in _tableViewDataArray) {
-//                        int j = [[[NSUserDefaults standardUserDefaults] objectForKey:@"xuanzexiangmu"] intValue];
-//                        if ([model.name isEqualToString:_nameDic[_bhList[j][@"Bh"]]]) {
-////                            _positionVolume += [model.Volume intValue];
-//                            if ([model.buyLessOrMore isEqualToString:@"空"]) {
-//                                [_bullishBtn setTitle:ReversePosition forState:UIControlStateNormal];
-//                                [_bearishBtn setTitle:BUYONCE forState:UIControlStateNormal];
-//                            }else if ([model.buyLessOrMore isEqualToString:@"多"]){
-//                                [_bearishBtn setTitle:ReversePosition forState:UIControlStateNormal];
-//                                [_bullishBtn setTitle:BUYONCE forState:UIControlStateNormal];
-//                            }
-//                        }
-//                    }
-//                }else{
-//                    [_bullishBtn setTitle:BUYMORE forState:UIControlStateNormal];
-//                    [_bearishBtn setTitle:BUYLESS forState:UIControlStateNormal];
-//                }
-//            }
+
             if (array.count == 0) {
                 _duoOrKongLabel.text = @"   ";
                 _numberLabel.text = _shouyiLabel.text = @"0";
@@ -653,6 +631,7 @@ static int const _SERVER_PORT = 2012;
 #pragma mark ****** 选择点差
 -(void)chooseDianCha{
     NSMutableDictionary* parameters = [[NSMutableDictionary alloc]initWithObjectsAndKeys:@"1234567890",@"DriverID",@"",@"UserID",@"b4026263-704e-4e12-a64d-f79cb42962cc",@"TaskGuid",@"QPDSXF",@"DataType", nil];
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:nil message:@"选择止盈止损" preferredStyle:UIAlertControllerStyleAlert];
     [_webRequest webRequestWithDataDic:parameters requestType:kRequestTypeTransformData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         if (error != NULL) {
             [self alertWithTitle:error.localizedDescription cancelButtonTitle:@"确定" otherButtonTitle:nil];
@@ -660,7 +639,6 @@ static int const _SERVER_PORT = 2012;
          NSString *resultString = [self getResultStringFromOperation:(NSData *)responseObject];
          NSData* data = [resultString dataUsingEncoding:NSUTF8StringEncoding];
         NSArray* dataArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:nil message:@"选择止盈止损" preferredStyle:UIAlertControllerStyleAlert];
         for (int i=0; i < dataArray.count; i++) {
             NSString *Point = [NSString stringWithFormat:@"止盈:%@,手续费:%@",dataArray[i][@"Point"],dataArray[i][@"Commission"]];
             NSString* num = [NSString stringWithFormat:@"止盈:%@",dataArray[i][@"Point"]];
@@ -671,9 +649,10 @@ static int const _SERVER_PORT = 2012;
             }];
             [alert addAction:laterAction];
         }
-        [self presentViewController:alert animated:YES completion:nil];
+        UIAlertAction *laterAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:nil];
+        [alert addAction:laterAction];
     }];
-   
+   [self presentViewController:alert animated:YES completion:nil];
 }
 #pragma mark 创建闪电图
 - (void)createLightningView{
