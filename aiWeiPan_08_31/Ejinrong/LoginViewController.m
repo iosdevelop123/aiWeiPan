@@ -145,10 +145,10 @@ static NSString* const TASKGUID = @"b4026263-704e-4e12-a64d-f79cb42962cc";
                                     PassWord,@"LoginPass",nil];
     WebRequest *webRequest = [[WebRequest alloc] init];
     [webRequest webRequestWithDataDic:dataDic requestType:kRequestTypeTransformData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        NSString *resultString = [self getResultStringFromOperation:(NSData *)responseObject];
         if (error!=nil) {
             NSLog(@"错误提示:%@",error);
         }else{
-            NSString *resultString = [self getResultStringFromOperation:(NSData *)responseObject];
             if ([resultString hasPrefix:@"{\"ID\":"]) {
                 NSData *jsonData = [resultString dataUsingEncoding:NSUTF16StringEncoding];
                 NSDictionary *jsonObject = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:&error];

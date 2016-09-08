@@ -104,32 +104,54 @@
         }
     }
 }
-
+#pragma mark ****** 时间戳转时间
+-(NSString*)TimeIntervalChangeToTimes:(NSString*)str{
+    NSTimeInterval time = [str doubleValue];
+    NSDate *detailDate = [NSDate dateWithTimeIntervalSince1970:time];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
+    [dateFormatter setDateFormat:@"yyyy-MM-ddTHH:mm:ss"];
+    NSString *curentDateStr = [dateFormatter stringFromDate:detailDate];
+    return curentDateStr;
+}
 #pragma mark ****** 数据的请求
 - (void)loadData{
     [_activity startAnimating];
     NSDictionary* login = [[NSUserDefaults standardUserDefaults]objectForKey:@"userDic"];
     NSString* log = [login objectForKey:@"LoginID"];
-    long nowDate = (long)[[NSDate date]timeIntervalSince1970]+60*60*24;
+    long nowDate = (long)[[NSDate date]timeIntervalSince1970] + 60 * 60 * 24;
     NSString* nowStr = [NSString stringWithFormat:@"%ld",nowDate];
-    long lastDate = nowDate - 24 * 60 * 60 * (_days+2);
+    NSString* now = [self TimeIntervalChangeToTimes:nowStr];
+    long lastDate = nowDate - 24 * 60 * 60 * (_days + 2);
     NSString* lastStr = [NSString stringWithFormat:@"%ld",lastDate];
+    NSString* last = [self TimeIntervalChangeToTimes:lastStr];
     NSString* DriverID = [[NSUserDefaults standardUserDefaults]objectForKey:@"DRIVERID"];
-    NSMutableDictionary* dic = [[NSMutableDictionary alloc]initWithObjectsAndKeys:DriverID,@"DriverID",@"1111",@"UserID",@"b4026263-704e-4e12-a64d-f79cb42962cc",@"TaskGuid",@"CloseOrderPages",@"DataType",log,@"LoginID",@"1",@"ProductType",@"1",@"PageCount",@"1",@"PageIndex",@"100",@"PageSize",lastStr,@"StartTime",nowStr,@"EndTime",nil];
+    NSMutableDictionary* dic = [[NSMutableDictionary alloc]initWithObjectsAndKeys:
+                                DriverID,@"DriverID",
+                                @"1111",@"UserID",
+                                @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf",@"TaskGuid",
+                                @"CloseOrderPages",@"DataType",
+                                log,@"LoginID",
+                                @"1",@"ProductType",
+                                @"100",@"PageCount",
+                                @"1",@"PageIndex",
+                                @"500",@"PageSize",
+                                last,@"StratTime",
+                                now,@"EndTime",
+                                @"",@"Symbol",nil];
     WebRequest *webRequest = [[WebRequest alloc] init];
     [webRequest webRequestWithDataDic:dic requestType:kRequestTypeTransformData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        GDataXMLDocument* document = [[GDataXMLDocument alloc]initWithData:responseObject options:0 error:nil];
+        GDataXMLElement* element = [document rootElement];
+        NSArray* array = [element children];
+        NSArray *jsonArray = [NSArray array];
+        for (int i = 0; i<array.count; i++) {
+            GDataXMLElement* ele = [array objectAtIndex:i];
+            NSData* data = [[ele stringValue]dataUsingEncoding:NSUTF8StringEncoding];
+            jsonArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+        }
         if (error != nil) {
             NSLog(@"错误提示:%@",error);
         }else{
-            GDataXMLDocument* document = [[GDataXMLDocument alloc]initWithData:responseObject options:0 error:nil];
-            GDataXMLElement* element = [document rootElement];
-            NSArray* array = [element children];
-            NSArray *jsonArray = [NSArray array];
-            for (int i = 0; i<array.count; i++) {
-                GDataXMLElement* ele = [array objectAtIndex:i];
-                NSData* data = [[ele stringValue]dataUsingEncoding:NSUTF8StringEncoding];
-                jsonArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-            }
             if (jsonArray.count>0) {
                 NSMutableArray *dataArr = [NSMutableArray array];
                 for (NSDictionary* dic in jsonArray) {

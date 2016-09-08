@@ -95,6 +95,8 @@ static int const _SERVER_PORT = 2012;
 @property (assign,nonatomic) int shouxufei; //手续费
 @property (strong,nonatomic) UIButton* diancha;//止盈止损
 @property (strong,nonatomic) NSString* dianchaString;//止盈止损大小(参数传给后台)
+@property (assign,nonatomic) NSInteger balance;//余额
+
 
 @end
 @implementation RootViewController
@@ -109,7 +111,6 @@ static int const _SERVER_PORT = 2012;
     [self getCurrentTotalPositionVolume:0];//获取当前选中商品的总持仓手数
     [self netStatus];//检测网络状态
     [self createSocket];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(createSocket) name:@"socket" object:nil];//从登录界面返回，开启socket连接
     NSInteger balance = [[[NSUserDefaults standardUserDefaults] objectForKey:@"userDic"][@"DouBiWeiPan"] integerValue];
     [[NSUserDefaults standardUserDefaults]setInteger:balance forKey:@"yue"];
 }
@@ -129,35 +130,45 @@ static int const _SERVER_PORT = 2012;
 //读取数据
 -(void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag{
     NSString *aStr=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    NSLog(@"%@",aStr);
+//    NSLog(@"%@",aStr);
     int j = [[[NSUserDefaults standardUserDefaults] objectForKey:@"xuanzexiangmu"] intValue];
     NSString* name = _bhDic[_bhList[j][@"Name"]][@"Bh"];
     //拆分字符串成数组
-    NSArray*  array = [aStr componentsSeparatedByString:@","];
-    NSMutableArray* arr = [NSMutableArray arrayWithArray:array];
-    if (![array[2] isEqualToString:@"CHECK"]) {
-        if ([array[0] isEqualToString:@"Data"]) {
+    NSString* resultString;
+    NSMutableArray* socketArray;
+    if ([aStr rangeOfString:@"\n"].location != NSNotFound) {
+        NSArray* arr = [aStr componentsSeparatedByString:@"\r"];
+        for (int i=0; i<arr.count; i++) {
+            resultString = arr[i];
+            NSArray* arrat = [resultString componentsSeparatedByString:@","];
+            if (arrat.count > 1) {
+                socketArray = [NSMutableArray arrayWithArray:arrat];
+                NSLog(@"%@",socketArray);
+            }
+        }
+    }
+    if (![socketArray[2] isEqualToString:@"CHECK"]) {
+        if ([socketArray[0] isEqualToString:@"Data"]) {
             for (int i=0; i<_bhList.count; i++) {
-                if ([arr[2] isEqualToString:_bhDic[_bhList[i][@"Name"]][@"Bh"]]) {//和货币中文名称一样
-                    _newlastArray = arr;
+                if ([socketArray[2] isEqualToString:_bhDic[_bhList[i][@"Name"]][@"Bh"]]) {//和货币中文名称一样
+                    _newlastArray = socketArray;
                 }
             }
-            if ([name isEqualToString:array[2]]) {
-                _asyncSocketArray = arr;
-                [self updateLightningViewUI:array];//更新闪电图
+            if ([name isEqualToString:socketArray[2]]) {
+                _asyncSocketArray = socketArray;
+                [self updateLightningViewUI:socketArray];//更新闪电图
             }
-            if ([array[1] isEqualToString:@"CloseOrders"]){//强平
-                if ([array[2] isEqualToString:_loginAccount]) {
+            if ([socketArray[1] isEqualToString:@"CloseOrders"]){//强平
+                if ([socketArray[2] isEqualToString:_loginAccount]) {
                     [self showAlert:@"关仓"];
                     [self getDataFromWebForPosi];
-                    NSInteger balance = [[[NSUserDefaults standardUserDefaults] objectForKey:@"userDic"][@"DouBiWeiPan"] integerValue];
-                    balance = balance + [array[5] integerValue] - [array[4] integerValue];
-                    [[NSUserDefaults standardUserDefaults]setInteger:balance forKey:@"yue"];
+                    _balance = _balance + [socketArray[5] integerValue] - [socketArray[4] integerValue];
+                    [[NSUserDefaults standardUserDefaults]setInteger:_balance forKey:@"yue"];
                 }
-            }else if ([array[1] isEqualToString:@"Change"]){//不同客户端登陆
-                if ([array[2] isEqualToString:_loginAccount]) {
+            }else if ([socketArray[1] isEqualToString:@"Change"]){//不同客户端登陆
+                if ([socketArray[2] isEqualToString:_loginAccount]) {
                     NSString* DriverID = [[NSUserDefaults standardUserDefaults] objectForKey:@"DRIVERID"];
-                    if (![array[3] isEqualToString:DriverID]) {
+                    if (![socketArray[3] isEqualToString:DriverID]) {
                         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"login"];
                         [self alertWithTitle:@"其他客户端登录..." cancelButtonTitle:@"确定" otherButtonTitle:nil];
                     }
@@ -253,6 +264,7 @@ static int const _SERVER_PORT = 2012;
 }
 #pragma mark 初始化数据
 - (void)initData{
+    _balance = [[[NSUserDefaults standardUserDefaults] objectForKey:@"userDic"][@"DouBiWeiPan"] integerValue];
     [self initBaseData];//初始化基本数据
     [self getSystemTime];//获取系统北京的时间
     [self getHBWorkTime];//获取商品交易时间
@@ -628,7 +640,7 @@ static int const _SERVER_PORT = 2012;
     _$.textColor = [UIColor grayColor];
     [self.rootView addSubview:_$ ];
 }
-#pragma mark ****** 选择点差
+#pragma mark ****** 选择止盈止损
 -(void)chooseDianCha{
     NSMutableDictionary* parameters = [[NSMutableDictionary alloc]initWithObjectsAndKeys:@"1234567890",@"DriverID",@"",@"UserID",@"b4026263-704e-4e12-a64d-f79cb42962cc",@"TaskGuid",@"QPDSXF",@"DataType", nil];
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:nil message:@"选择止盈止损" preferredStyle:UIAlertControllerStyleAlert];
@@ -687,6 +699,9 @@ static int const _SERVER_PORT = 2012;
                         [dataArray insertObject:[NSNumber numberWithFloat:price] atIndex:0];
                     }
                 }
+                _bullishBtn.enabled = _bearishBtn.enabled = YES;
+                [_bullishBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+                [_bearishBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
                 [self LoadLightningViewUI:dataArray];//加载UI
                 //获取初始价格数组
                 if (dataArray.count>(int)(WIDTH-56)) {
@@ -831,10 +846,11 @@ static int const _SERVER_PORT = 2012;
         [self updateCurrentPriceAndProfits:NO];//刷新最新盈亏数和行情价格
         if (_lastArray[3] == _asyncSocketArray[3]) {
             [self updateLightningViewUI:_asyncSocketArray];//更新闪电图UI
-        }else if(_asyncSocketArray != NULL)
+        }else if(_asyncSocketArray != NULL){
             if ([name isEqualToString:_asyncSocketArray[2]]) {
                 _lastArray = _asyncSocketArray;
             }
+        }
         [self ThreeTimeLabelLeftMove];//刷新闪电图下面显示的3个时间label
     }
     if (_lightningStepper%1200==0) {//20秒一次
@@ -1074,7 +1090,7 @@ static int const _SERVER_PORT = 2012;
     }else if ([bullishOrBearish isEqualToString:@"空"]){
         dataType = @"Sell";
     }
-    NSMutableDictionary* parmars = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
+    NSMutableDictionary* parameters = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
                 @"1234567890",@"DriverID",
                 @"1234",@"UserID",
                 TASKGUID,@"TaskGuid",
@@ -1087,16 +1103,20 @@ static int const _SERVER_PORT = 2012;
                 @"1",@"ProductType",
                 @"iPhone",@"Comment",
                 dataType,@"Type",nil];
-    [_webRequest webRequestWithDataDic:parmars requestType:kRequestTypeSetData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
-            NSString *resultString = [self getResultStringFromOperation:(NSData *)responseObject];
-            if (![resultString hasPrefix:@"{\"ClosePrice\""]) {
-                [self alertWithTitle:resultString cancelButtonTitle:@"确定" otherButtonTitle:nil];
-            }else{
+    NSLog(@"%@",parameters);
+    [_webRequest webRequestWithDataDic:parameters requestType:kRequestTypeSetData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        NSString *resultString = [self getResultStringFromOperation:(NSData *)responseObject];
+        NSData* data = [resultString dataUsingEncoding:NSUTF8StringEncoding];
+        NSDictionary* dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+        if ([dic[@"OrderNumber"] isEqualToString:@""]) {
+             [self alertWithTitle:dic[@"Comment"] cancelButtonTitle:@"确定" otherButtonTitle:nil];
+        }else{
 //                _positionVolume += [volume intValue];
-                [self getDataFromWebForPosi];
-                if (_isShowAlertView) {
-                    [self showAlert:@"买入成功"];  }
+            [self getDataFromWebForPosi];
+            if (_isShowAlertView) {
+                [self showAlert:@"买入成功"];
             }
+        }
         [self buttonCanTouch];
         [_activity stopAnimating];
     }];
@@ -1454,12 +1474,7 @@ static int const _SERVER_PORT = 2012;
     if (!login) {
         [self alertWithTitle:@"请先登录" cancelButtonTitle:@"取消" otherButtonTitle:@"登录"];
     }else{
-//        [_asyncSocket disconnect];
         UserCenterViewController *userVc = [[UserCenterViewController alloc]init];
-//        [userVc setReturnRootViewBlock:^{
-//            [self createSocket];
-//            [self getDataFromWebForPosi];
-//        }];
         userVc.delegate = self;
         [self.navigationController pushViewController: userVc animated:YES];
     }

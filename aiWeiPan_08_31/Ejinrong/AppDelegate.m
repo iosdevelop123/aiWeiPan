@@ -17,14 +17,14 @@
 #import <ifaddrs.h>
 #import <arpa/inet.h>
 
-static NSString* const TaskGuid = @"b4026263-704e-4e12-a64d-f79cb42962cc";
 @interface AppDelegate ()<UIAlertViewDelegate>
 @end
 @implementation AppDelegate
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [self getiPhoneIP];
     //获取商品列表 
-    NSMutableDictionary* dic = [[NSMutableDictionary alloc]initWithObjectsAndKeys:TaskGuid,@"TaskGuid",@"HBList",@"DataType",@"1234",@"UserID",nil];
+    NSMutableDictionary* dic = [[NSMutableDictionary alloc]initWithObjectsAndKeys:
+                                @"b4026263-704e-4e12-a64d-f79cb42962cc",@"TaskGuid",@"HBList",@"DataType",@"1234",@"UserID",nil];
     WebRequest* web = [[WebRequest alloc]init];
     [web webRequestWithDataDic:dic requestType:kRequestTypeTransformData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         if (error!=nil) {
