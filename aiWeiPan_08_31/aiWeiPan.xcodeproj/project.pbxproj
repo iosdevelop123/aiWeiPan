@@ -64,6 +64,7 @@
 		69F4CBE91D17CD85003C9D06 /* GuideImage3_568h.png in Resources */ = {isa = PBXBuildFile; fileRef = 69F4CBE51D17CD85003C9D06 /* GuideImage3_568h.png */; };
 		69F4CBEA1D17CD85003C9D06 /* GuideImage3_667h.png in Resources */ = {isa = PBXBuildFile; fileRef = 69F4CBE61D17CD85003C9D06 /* GuideImage3_667h.png */; };
 		69F4CBED1D17CDC9003C9D06 /* GuideImage3_736h.png in Resources */ = {isa = PBXBuildFile; fileRef = 69F4CBEC1D17CDC9003C9D06 /* GuideImage3_736h.png */; };
+		74024DCA1D8154F800F8ABBB /* SingleSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 74024DC91D8154F800F8ABBB /* SingleSocket.m */; };
 		740E44761BF2E05A009057BA /* HistoryOrderModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 740E44751BF2E05A009057BA /* HistoryOrderModel.m */; };
 		743D83681BD8772E00A8DE9E /* RootTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 743D83671BD8772E00A8DE9E /* RootTableViewCell.m */; };
 		743D836B1BD8792600A8DE9E /* holdPositionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 743D836A1BD8792600A8DE9E /* holdPositionModel.m */; };
@@ -184,6 +185,8 @@
 		69F4CBE51D17CD85003C9D06 /* GuideImage3_568h.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GuideImage3_568h.png; sourceTree = "<group>"; };
 		69F4CBE61D17CD85003C9D06 /* GuideImage3_667h.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GuideImage3_667h.png; sourceTree = "<group>"; };
 		69F4CBEC1D17CDC9003C9D06 /* GuideImage3_736h.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GuideImage3_736h.png; sourceTree = "<group>"; };
+		74024DC81D8154F800F8ABBB /* SingleSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SingleSocket.h; sourceTree = "<group>"; };
+		74024DC91D8154F800F8ABBB /* SingleSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SingleSocket.m; sourceTree = "<group>"; };
 		740E44741BF2E05A009057BA /* HistoryOrderModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryOrderModel.h; sourceTree = "<group>"; };
 		740E44751BF2E05A009057BA /* HistoryOrderModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryOrderModel.m; sourceTree = "<group>"; };
 		743D83661BD8772E00A8DE9E /* RootTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootTableViewCell.h; sourceTree = "<group>"; };
@@ -449,6 +452,8 @@
 				740E44741BF2E05A009057BA /* HistoryOrderModel.h */,
 				740E44751BF2E05A009057BA /* HistoryOrderModel.m */,
 				69327D071BD2105000F69C38 /* PopViewControllerDelegate.h */,
+				74024DC81D8154F800F8ABBB /* SingleSocket.h */,
+				74024DC91D8154F800F8ABBB /* SingleSocket.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -603,6 +608,7 @@
 				694DEC8B1BC90E49009D361E /* NicknameModifyViewController.m in Sources */,
 				69CB875D1BB2367700549029 /* MainViewController.m in Sources */,
 				6940F8161BF0429F003CE164 /* WebRequest.m in Sources */,
+				74024DCA1D8154F800F8ABBB /* SingleSocket.m in Sources */,
 				69956FD21BD127630096F70B /* LoginCheckViewController.m in Sources */,
 				695A268E1C28E1AA00212BD4 /* AFHTTPSessionManager.m in Sources */,
 				692DCB2C1BD094D500670A54 /* CustomNavigation.m in Sources */,

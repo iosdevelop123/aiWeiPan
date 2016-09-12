@@ -189,28 +189,28 @@
     [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"login"];
     [self.navigationController popViewControllerAnimated:YES];
      [_delegate setPopViewControoler];
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"要否退出登录" message:nil preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
-    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"退出登录" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-        [_delegate setPopViewControoler];
-        [_activity startAnimating];
-        NSString* driverId = [[NSUserDefaults standardUserDefaults] objectForKey:@"DRIVERID"];
-        NSMutableDictionary *userDic = [[NSMutableDictionary alloc] initWithObjectsAndKeys:driverId,@"DriverID",TASKGUID,@"TaskGuid",@"DriverLoginOut",@"DataType", nil];
-        WebRequest *webRequest = [[WebRequest alloc] init];
-        [webRequest webRequestWithDataDic:userDic requestType:kRequestTypeSetData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
-            if (error!=nil) {
-                NSLog(@"错误提示:%@",error);
-            }else{
-                [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"login"];
-                [self.navigationController popViewControllerAnimated:YES];
-            }
-            [_activity stopAnimating];
-        }];
-
-    }];
-    [alertController addAction:cancelAction];
-    [alertController addAction:okAction];
-    [self presentViewController:alertController animated:YES completion:nil];
+//    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"要否退出登录" message:nil preferredStyle:UIAlertControllerStyleAlert];
+//    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+//    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"退出登录" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+//        [_delegate setPopViewControoler];
+//        [_activity startAnimating];
+//        NSString* driverId = [[NSUserDefaults standardUserDefaults] objectForKey:@"DRIVERID"];
+//        NSMutableDictionary *userDic = [[NSMutableDictionary alloc] initWithObjectsAndKeys:driverId,@"DriverID",TASKGUID,@"TaskGuid",@"DriverLoginOut",@"DataType", nil];
+//        WebRequest *webRequest = [[WebRequest alloc] init];
+//        [webRequest webRequestWithDataDic:userDic requestType:kRequestTypeSetData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+//            if (error!=nil) {
+//                NSLog(@"错误提示:%@",error);
+//            }else{
+//                [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"login"];
+//                [self.navigationController popViewControllerAnimated:YES];
+//            }
+//            [_activity stopAnimating];
+//        }];
+//
+//    }];
+//    [alertController addAction:cancelAction];
+//    [alertController addAction:okAction];
+//    [self presentViewController:alertController animated:YES completion:nil];
 }
 #pragma mark ****** 点击更换头像事件
 - (void)enterToUserDetail:(UIButton*)sender{
