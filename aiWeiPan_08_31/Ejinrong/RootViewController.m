@@ -250,8 +250,8 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
 #pragma mark 初始化数据
 - (void)initData{
     _dianchaString = @"8";
-    _balance = [[[NSUserDefaults standardUserDefaults] objectForKey:@"userDic"][@"DouBiWeiPan"] integerValue];
-    [[NSUserDefaults standardUserDefaults]setInteger:_balance forKey:@"yue"];//获取余额
+//    _balance = [[[NSUserDefaults standardUserDefaults] objectForKey:@"userDic"][@"DouBiWeiPan"] integerValue];
+//    [[NSUserDefaults standardUserDefaults]setInteger:_balance forKey:@"yue"];//获取余额
     [self initBaseData];//初始化基本数据
     [self getSystemTime];//获取系统北京的时间
     [self getHBWorkTime];//获取商品交易时间
