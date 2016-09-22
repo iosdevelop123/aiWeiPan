@@ -156,7 +156,7 @@
                 NSMutableArray *dataArr = [NSMutableArray array];
                 for (NSDictionary* dic in jsonArray) {
                     HistoryOrderModel* model = [[HistoryOrderModel alloc]init];
-                    model.Symbol = (_nameDic[dic[@"Symbol"]] ==nil ? dic[@"Symbol"] : _nameDic[dic[@"Symbol"]]);
+                    model.Symbol = (_nameDic[dic[@"Symbol"]] == nil ? dic[@"Symbol"] : _nameDic[dic[@"Symbol"]]);
                     model.OpenTime = dic[@"OpenTime"];
                     model.CloseTime = dic[@"CloseTime"];
                     model.OpenPrice = dic[@"OpenPrice"];

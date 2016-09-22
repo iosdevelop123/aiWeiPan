@@ -74,7 +74,7 @@
 //            [_activity stopAnimating];
         }else{
             NSInteger num = [[NSUserDefaults standardUserDefaults]integerForKey:@"yue"];
-            NSString *balance = [NSString stringWithFormat:@"%ld$",(long)num];
+            NSString *balance = [NSString stringWithFormat:@"%.1f(%ld$)",num*6.5,(long)num];
             UITableViewCell *cell =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
             cell.detailTextLabel.text= balance;
 //            [self requestBalanceData];
