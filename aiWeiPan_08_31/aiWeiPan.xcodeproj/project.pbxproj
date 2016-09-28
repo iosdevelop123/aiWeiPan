@@ -768,7 +768,7 @@
 				INFOPLIST_FILE = Ejinrong/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.Ejinrong.aiweipan;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ejinrong.aiweipan;
 				PRODUCT_NAME = aiWeiPan;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -790,7 +790,7 @@
 				INFOPLIST_FILE = Ejinrong/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.Ejinrong.aiweipan;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ejinrong.aiweipan;
 				PRODUCT_NAME = aiWeiPan;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;

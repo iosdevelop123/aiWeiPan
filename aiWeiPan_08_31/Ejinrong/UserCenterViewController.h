@@ -12,6 +12,5 @@
 @property (weak,nonatomic) id<PopViewControllerDelegate> delegate;
 
 @property (nonatomic, strong)NSMutableDictionary *dic;
-@property(nonatomic, copy) void (^returnRootViewBlock)();
 
 @end

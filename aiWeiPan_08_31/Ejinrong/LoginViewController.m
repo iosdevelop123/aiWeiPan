@@ -140,7 +140,7 @@ static NSString* const TASKGUID = @"b4026263-704e-4e12-a64d-f79cb42962cc";
     NSString* PassWord = [NSString stringWithFormat:@"%@",_pwdTxt.text];
     NSMutableDictionary *dataDic = [[NSMutableDictionary alloc]initWithObjectsAndKeys:
                                     str,@"DriverID",
-                                    @"任务标识",@"UserID",
+                                    @"1111",@"UserID",
                                     TASKGUID,@"TaskGuid",
                                     @"CheckUser",@"DataType",
                                     _userNameTxt.text,@"LoginID",
@@ -148,10 +148,8 @@ static NSString* const TASKGUID = @"b4026263-704e-4e12-a64d-f79cb42962cc";
     WebRequest *webRequest = [[WebRequest alloc] init];
     [webRequest webRequestWithDataDic:dataDic requestType:kRequestTypeTransformData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         NSString *resultString = [self getResultStringFromOperation:(NSData *)responseObject];
-        if (error!=nil) {
-            NSLog(@"错误提示:%@",error);
-        }else{
-            if ([resultString hasPrefix:@"{\"ID\":"]) {
+        if (error!=nil) {  }else{
+            if (![resultString isEqualToString:@"{}"]) {
                 NSData *jsonData = [resultString dataUsingEncoding:NSUTF16StringEncoding];
                 NSDictionary *jsonObject = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:&error];
                  [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"login"];//------ 修改登录状态 ------
@@ -164,8 +162,8 @@ static NSString* const TASKGUID = @"b4026263-704e-4e12-a64d-f79cb42962cc";
                         [userDic setObject:[name stringByAppendingString:randomNum] forKey:@"NickName"];
                     }
                     [[NSUserDefaults standardUserDefaults] setObject:userDic forKey:@"userDic"];
-                    NSInteger _balance = [[[NSUserDefaults standardUserDefaults] objectForKey:@"userDic"][@"DouBiWeiPan"] integerValue];
-                    [[NSUserDefaults standardUserDefaults]setInteger:_balance forKey:@"yue"];//获取余额
+//                    NSInteger _balance = [[[NSUserDefaults standardUserDefaults] objectForKey:@"userDic"][@"DouBiWeiPan"] integerValue];
+//                    [[NSUserDefaults standardUserDefaults]setInteger:_balance forKey:@"yue"];//获取余额
                     MainViewController *mvc = [[MainViewController alloc] init];
                     mvc.viewControllers = @[[[RootViewController alloc]init]];
                     [UIApplication sharedApplication].keyWindow.rootViewController = mvc;

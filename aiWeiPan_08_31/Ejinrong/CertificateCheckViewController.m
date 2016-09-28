@@ -116,8 +116,8 @@
     WebRequest *webRequest = [[WebRequest alloc] init];
     [webRequest webRequestWithDataDic:_userDic requestType:kRequestTypeSetData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         if (error!=nil) {
-            NSLog(@"证件号验证请求失败");
-            NSLog(@"错误提示:%@",error);
+//            NSLog(@"证件号验证请求失败");
+//            NSLog(@"错误提示:%@",error);
         }else{
             [[NSUserDefaults standardUserDefaults] setObject:_userDic forKey:@"userDic"];
             [_delegate showCertificate:_CertificateTxt.text name:_nameTxt.text];

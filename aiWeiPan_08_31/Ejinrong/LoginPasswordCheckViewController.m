@@ -135,7 +135,7 @@
     WebRequest *webRequest = [[WebRequest alloc] init];
     [webRequest webRequestWithDataDic:_dataDictionary requestType:kRequestTypeTransformData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         if (error!=nil) {
-            NSLog(@"错误提示:%@",error);
+//            NSLog(@"错误提示:%@",error);
         }else{
             NSString *xmlString = [[NSString alloc] initWithData:(NSData *)responseObject encoding:NSUTF8StringEncoding];
             GDataXMLDocument *xmlDoc = [[GDataXMLDocument alloc] initWithXMLString:xmlString options:0 error:nil];

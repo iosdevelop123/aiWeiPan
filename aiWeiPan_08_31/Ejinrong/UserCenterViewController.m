@@ -17,6 +17,7 @@
 #define WIDTH [[UIScreen mainScreen] bounds].size.width
 #define HEIGHT [[UIScreen mainScreen] bounds].size.height
 #define TASKGUID  @"b4026263-704e-4e12-a64d-f79cb42962cc"
+
 @interface UserCenterViewController ()<UITableViewDelegate,UITableViewDataSource,UIActionSheetDelegate,UINavigationControllerDelegate,UserDetailViewControllerDelegate>
 
 @property (strong,nonatomic) NSMutableDictionary *userDic;//用户数据字典
@@ -37,8 +38,8 @@
     [super viewDidLoad];
     [self initData];
     [self createUI];
-    [self netStatus];
     [self initActivity];
+    [self requestBalanceData];
 }
 #pragma mark ****** //------ 刷新控件 ------
 -(void)initActivity{
@@ -49,7 +50,7 @@
     //------ 设置进度轮显示类型 ------
     [_activity setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
     [self.view addSubview:_activity];
-    [_activity startAnimating];
+//    [_activity startAnimating];
 }
 #pragma mark ****** 初始化数据
 -(void)initData{
@@ -60,46 +61,24 @@
     _imageArray = data[@"imageArray"];
     _titleArray = data[@"titleArray"];
 }
- #pragma mark ******  检测手机网络状态
--(void)netStatus{
-    //检测手机运行的是什么网络状态
-    [[AFNetworkReachabilityManager sharedManager] startMonitoring];
-    // 检测网络连接的单例,网络变化时的回调方法
-    [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
-        if(status==AFNetworkReachabilityStatusNotReachable){
-            UIAlertController *AlertController = [UIAlertController alertControllerWithTitle:@"请求超时,请检查网络连接"   message:nil preferredStyle:UIAlertControllerStyleAlert];
-            UIAlertAction *canaleAction = [UIAlertAction actionWithTitle:@"关闭" style:UIAlertActionStyleDefault handler:nil];
-            [AlertController addAction:canaleAction];
-            [self presentViewController:AlertController animated:YES completion:nil];
-//            [_activity stopAnimating];
-        }else{
-            NSInteger num = [[NSUserDefaults standardUserDefaults]integerForKey:@"yue"];
-            NSString *balance = [NSString stringWithFormat:@"%.1f(%ld$)",num*6.5,(long)num];
-            UITableViewCell *cell =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-            cell.detailTextLabel.text= balance;
-//            [self requestBalanceData];
-        }
-        [_activity stopAnimating];
-    }];
-}
 #pragma mark ****** 网络请求个人信息
 -(void)requestBalanceData{
     NSDictionary *userDic = [[NSUserDefaults standardUserDefaults]objectForKey:@"userDic"];
-    NSString* DriverID = [[NSUserDefaults standardUserDefaults]objectForKey:@"DRIVERID"];
+//    NSString* DriverID = [[NSUserDefaults standardUserDefaults]objectForKey:@"DRIVERID"];
     NSString *LoginAccount = [userDic objectForKey:@"LoginID"];
-    NSString *LoginPass = [userDic objectForKey:@"LoginPass"];
-    NSMutableDictionary *dic = [[NSMutableDictionary alloc]initWithObjectsAndKeys:DriverID,@"DriverID",@"1",@"UserID",TASKGUID,@"TaskGuid",@"CheckUser",@"DataType",LoginAccount,@"LoginID", LoginPass,@"LoginPass",nil];
+//    NSString *LoginPass = [userDic objectForKey:@"LoginPass"];
+    NSMutableDictionary *dic = [[NSMutableDictionary alloc]initWithObjectsAndKeys:@"UserDouBiWeiPan",@"DataType",LoginAccount,@"DataGuid",nil];
     WebRequest *webRequest = [[WebRequest alloc] init];
-    [webRequest webRequestWithDataDic:dic requestType:kRequestTypeTransformData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
-        if (error!=nil) {  }else{
+    [webRequest webRequestWithDataDic:dic requestType:kRequestTypeGetData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        if (error != nil) {  }else{
             GDataXMLDocument* document = [[GDataXMLDocument alloc]initWithData:responseObject options:0 error:nil];
             GDataXMLElement* element = [document rootElement];
             NSArray* array = [element children];
             for (int i = 0; i<array.count; i++) {
                 GDataXMLElement* ele = [array objectAtIndex:i];
-                NSData* data = [[ele stringValue]dataUsingEncoding:NSUTF8StringEncoding];
-                NSDictionary* jsonDic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                NSString *balance = [NSString stringWithFormat:@"%@$",jsonDic[@"DouBiWeiPan"]];
+                int num = [ele.stringValue intValue];
+                NSLog(@"%d",num);
+                NSString *balance = [NSString stringWithFormat:@"%.1f(%.1f$)",num * 6.5 ,num * 1.0];
                 UITableViewCell *cell =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
                 cell.detailTextLabel.text= balance;
             }
@@ -149,17 +128,19 @@
     [self.view addSubview:zhuxiaoButton];
     
 }
+#pragma mark ****** tableView的代理
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return 3;
 }
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"mycell"];
     cell.imageView.image = [UIImage imageNamed:_imageArray[indexPath.row]];
     cell.textLabel.text = _titleArray[indexPath.row];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    if (indexPath.row<1) {
-        cell.detailTextLabel.text =@"0$";
+    if (indexPath.row == 0) {
+//        NSInteger num = [[NSUserDefaults standardUserDefaults] integerForKey:@"yue"];
+        NSString *balance = @"0$";
+        cell.detailTextLabel.text = balance;
     }else{
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
@@ -178,7 +159,6 @@
 #pragma mark ****** 改变头像代理方法
 - (void)changeHeadimage:(NSData *)imageData{
     _headImageView.image = [UIImage imageWithData:imageData];
-    
 }
 #pragma mark ****** 改变昵称代理方法
 - (void)changeNickname:(NSString *)Nickname{
@@ -221,9 +201,6 @@
     }
 }
 - (void)back{
-//    if (_returnRootViewBlock) {
-//        _returnRootViewBlock();
-//    }
     [_delegate changeNaiColor];
     [self.navigationController popViewControllerAnimated:YES];
 }

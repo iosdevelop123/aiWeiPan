@@ -65,8 +65,8 @@
             WebRequest *webRequest = [[WebRequest alloc] init];
             [webRequest webRequestWithDataDic:_userDic requestType:kRequestTypeSetData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
                 if (error!=nil) {
-                    NSLog(@"更改昵称请求失败");
-                    NSLog(@"错误提示:%@",error);
+//                    NSLog(@"更改昵称请求失败");
+//                    NSLog(@"错误提示:%@",error);
                 }else{
                     [[NSUserDefaults standardUserDefaults] setObject:_userDic forKey:@"userDic"];
                     [self.navigationController popViewControllerAnimated:YES];

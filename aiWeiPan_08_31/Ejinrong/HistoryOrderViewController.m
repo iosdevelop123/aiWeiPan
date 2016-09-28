@@ -150,7 +150,7 @@
             jsonArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         }
         if (error != nil) {
-            NSLog(@"错误提示:%@",error);
+//            NSLog(@"错误提示:%@",error);
         }else{
             if (jsonArray.count>0) {
                 NSMutableArray *dataArr = [NSMutableArray array];

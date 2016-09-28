@@ -28,7 +28,7 @@
     WebRequest* web = [[WebRequest alloc]init];
     [web webRequestWithDataDic:dic requestType:kRequestTypeTransformData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         if (error!=nil) {
-            NSLog(@"获取商品列表失败");
+//            NSLog(@"获取商品列表失败");
         }else{
             GDataXMLDocument* document = [[GDataXMLDocument alloc]initWithData:responseObject options:0 error:nil];
             GDataXMLElement* element = [document rootElement];
