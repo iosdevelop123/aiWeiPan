@@ -14,9 +14,12 @@
 #import "WebRequest.h"
 #import "AFNetworking.h"
 #import "GDataXMLNode.h"
-#define WIDTH [[UIScreen mainScreen] bounds].size.width
-#define HEIGHT [[UIScreen mainScreen] bounds].size.height
-#define TASKGUID  @"b4026263-704e-4e12-a64d-f79cb42962cc"
+#import "PrefixHeader.pch"
+
+//#define WIDTH [[UIScreen mainScreen] bounds].size.width
+//#define HEIGHT [[UIScreen mainScreen] bounds].size.height
+
+//#define TASKGUID  @"b4026263-704e-4e12-a64d-f79cb42962cc"
 
 @interface UserCenterViewController ()<UITableViewDelegate,UITableViewDataSource,UIActionSheetDelegate,UINavigationControllerDelegate,UserDetailViewControllerDelegate>
 
@@ -77,7 +80,7 @@
             for (int i = 0; i<array.count; i++) {
                 GDataXMLElement* ele = [array objectAtIndex:i];
                 int num = [ele.stringValue intValue];
-                NSLog(@"%d",num);
+                WLog(@"%d",num);
                 NSString *balance = [NSString stringWithFormat:@"%.1f(%.1f$)",num * 6.5 ,num * 1.0];
                 UITableViewCell *cell =[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
                 cell.detailTextLabel.text= balance;

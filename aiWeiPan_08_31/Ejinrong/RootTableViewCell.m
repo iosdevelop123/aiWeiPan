@@ -7,11 +7,9 @@
 //
 
 #import "RootTableViewCell.h"
-@implementation RootTableViewCell
+#import "PrefixHeader.pch"
 
-#define GRAYCOLOR [UIColor colorWithRed:163/255.0 green:163/255.0 blue:163/255.0 alpha:1.0]
-#define WIDTH [[UIScreen mainScreen] bounds].size.width
-#define HEIGHT self.frame.size.height
+@implementation RootTableViewCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {

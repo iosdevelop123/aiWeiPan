@@ -13,6 +13,7 @@
 #import "WebRequest.h"
 #import "GDataXMLNode.h"
 #import "AFNetworking.h"
+#import "PrefixHeader.pch"
 //获取IP地址
 #import <ifaddrs.h>
 #import <arpa/inet.h>
@@ -22,32 +23,6 @@
 @implementation AppDelegate
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [self getiPhoneIP];
-    //获取商品列表 
-    NSMutableDictionary* dic = [[NSMutableDictionary alloc]initWithObjectsAndKeys:
-                                @"b4026263-704e-4e12-a64d-f79cb42962cc",@"TaskGuid",@"HBList",@"DataType",@"1234",@"UserID",nil];
-    WebRequest* web = [[WebRequest alloc]init];
-    [web webRequestWithDataDic:dic requestType:kRequestTypeTransformData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
-        if (error!=nil) {
-//            NSLog(@"获取商品列表失败");
-        }else{
-            GDataXMLDocument* document = [[GDataXMLDocument alloc]initWithData:responseObject options:0 error:nil];
-            GDataXMLElement* element = [document rootElement];
-            NSArray *array = [element children];
-            NSString *eleString;
-            for (int i = 0; i<array.count; i++) {
-                GDataXMLElement* ele = [array objectAtIndex:i];
-                eleString = [ele stringValue];
-            }
-            if ([@"" isEqualToString:eleString]) {
-                UIAlertView *alart = [[UIAlertView alloc] initWithTitle:@"商品列表加载失败，请重启软件" message:nil delegate:self cancelButtonTitle:@"关闭" otherButtonTitles:nil];
-                [alart show];
-            }else{
-                NSData *data = [eleString dataUsingEncoding:NSUTF8StringEncoding];
-                NSArray *bhArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                [[NSUserDefaults standardUserDefaults] setObject:bhArray forKey:@"BHList"];
-            }
-        }
-    }];
     //------ 判断是不是第一次启动应用 ------
     if(![[NSUserDefaults standardUserDefaults] boolForKey:@"firstLaunch"]){
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"firstLaunch"];
@@ -67,7 +42,6 @@
     return YES;
 }
 - (void)applicationWillResignActive:(UIApplication *)application {}
-
 #pragma mark 进入后台
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     //设置永久后台运行

@@ -36,7 +36,6 @@ static int const _SERVER_PORT = 2012;
 #pragma mark ****** asyncSocket代理方法
 //建立连接
 -(void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port{
-//    NSLog(@"onScoket:%p did connecte to host:%@ on port:%d",sock,host,port);
     [sock readDataWithTimeout:60 tag:10];
 }
 //读取数据

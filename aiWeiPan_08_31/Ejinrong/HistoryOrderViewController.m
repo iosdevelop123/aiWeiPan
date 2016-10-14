@@ -13,6 +13,7 @@
 #import "WebRequest.h"
 #import "GDataXMLNode.h"
 #import "SettingView.h"
+#import "PrefixHeader.pch"
 
 @interface HistoryOrderViewController ()<UIPickerViewDataSource,UIPickerViewDelegate>
 
@@ -32,9 +33,9 @@
 
 @end
 
-#define WIDTH self.view.bounds.size.width
-#define HEIGHT self.view.bounds.size.height
-#define BLUECOLOR [UIColor colorWithRed:20/255.0 green:113/255.0 blue:221/255.0 alpha:1]
+//#define WIDTH self.view.bounds.size.width
+//#define HEIGHT self.view.bounds.size.height
+//#define BLUECOLOR [UIColor colorWithRed:20/255.0 green:113/255.0 blue:221/255.0 alpha:1]
 //#define TASKGUID  @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf"
 @implementation HistoryOrderViewController
 
@@ -149,9 +150,7 @@
             NSData* data = [[ele stringValue]dataUsingEncoding:NSUTF8StringEncoding];
             jsonArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         }
-        if (error != nil) {
-//            NSLog(@"错误提示:%@",error);
-        }else{
+        if (error != nil) {   }else{
             if (jsonArray.count>0) {
                 NSMutableArray *dataArr = [NSMutableArray array];
                 for (NSDictionary* dic in jsonArray) {
@@ -259,15 +258,14 @@
     }else{
         _item = _itemList[row];
     }
-   
 }
 #pragma mark 自定义每行的视图
 - (UIView*)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view{
     UILabel* lab = [[UILabel alloc] init];
     lab.text = 0 == component ? _daysArray[row] : _itemList[row];
-    [lab setFont:[UIFont fontWithName:@"Helvetica" size:18.0f]];
-    [lab setTextAlignment:NSTextAlignmentCenter];
-    [lab setTextColor:[UIColor whiteColor]];
+    lab.font = [UIFont fontWithName:@"Helvetica" size:18.0f];
+    lab.textAlignment = NSTextAlignmentCenter;
+    lab.textColor = [UIColor whiteColor];
     return lab;
 }
 @end

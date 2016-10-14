@@ -14,10 +14,7 @@
 #import "WebRequest.h"
 #import "GDataXMLNode.h"
 #import "SingleSocket.h"
-
-#define BLUECOLOR [UIColor colorWithRed:20/255.0 green:113/255.0 blue:221/255.0 alpha:1]
-#define HEIGHT self.view.bounds.size.height
-#define WIDTH self.view.bounds.size.width
+#import "PrefixHeader.pch"
 
 static NSString* const TASKGUID = @"b4026263-704e-4e12-a64d-f79cb42962cc";
 @interface LoginViewController ()<UITextFieldDelegate>
@@ -148,7 +145,7 @@ static NSString* const TASKGUID = @"b4026263-704e-4e12-a64d-f79cb42962cc";
     WebRequest *webRequest = [[WebRequest alloc] init];
     [webRequest webRequestWithDataDic:dataDic requestType:kRequestTypeTransformData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         NSString *resultString = [self getResultStringFromOperation:(NSData *)responseObject];
-        if (error!=nil) {  }else{
+        if (error != nil) {  }else{
             if (![resultString isEqualToString:@"{}"]) {
                 NSData *jsonData = [resultString dataUsingEncoding:NSUTF16StringEncoding];
                 NSDictionary *jsonObject = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:&error];

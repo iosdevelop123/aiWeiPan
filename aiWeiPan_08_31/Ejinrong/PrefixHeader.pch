@@ -14,4 +14,19 @@
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 
+#define WIDTH [UIScreen mainScreen].bounds.size.width
+#define HEIGHT [UIScreen mainScreen].bounds.size.height
+#define GLODENCOLOR [UIColor colorWithRed:232/255.0 green:192/255.0 blue:133/255.0 alpha:1.0]
+#define REDCOLOR [UIColor colorWithRed:252/255.0 green:72/255.0 blue:46/255.0 alpha:1.0]
+#define BLUECOLOR [UIColor colorWithRed:18/255.0 green:113/255.0 blue:220/255.0 alpha:1.0]
+#define GRAYCOLOR [UIColor colorWithRed:163/255.0 green:163/255.0 blue:163/255.0 alpha:1.0]
+
+
+#ifdef DEBUG
+#   define WLog(fmt, ...) NSLog((@"%s [Line:%d]--> " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
+#else
+#   define WLog(...)
+#endif
+
+
 #endif /* PrefixHeader_pch */

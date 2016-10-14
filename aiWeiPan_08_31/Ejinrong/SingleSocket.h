@@ -11,8 +11,8 @@
 @protocol SingletonSocketDelegate <NSObject>
 
 - (void)SingetonError:(NSError *)error;
-
 - (void)didReadData:(NSString *)data;
+
 @end
 
 @interface SingleSocket : NSObject<GCDAsyncSocketDelegate>

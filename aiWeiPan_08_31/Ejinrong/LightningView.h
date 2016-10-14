@@ -15,6 +15,7 @@
 @property (strong,nonatomic) UILabel *priceLabel;//闪电图买价Label
 @property (assign,nonatomic) CGFloat maxPriceForLightningView;
 @property (assign,nonatomic) CGFloat minPriceForLightningView;
+@property (assign,nonatomic) double price;
 
 - (void)refreshPoint:(NSMutableArray *)pointArray;
 

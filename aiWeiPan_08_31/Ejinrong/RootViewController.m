@@ -15,17 +15,13 @@
 #import "holdPositionModel.h"
 #import "GCDAsyncSocket.h"
 #import "SingleSocket.h"
+#import "PrefixHeader.pch"
 
-#define WIDTH [UIScreen mainScreen].bounds.size.width
-#define HEIGHT [UIScreen mainScreen].bounds.size.height
-#define GLODENCOLOR [UIColor colorWithRed:232/255.0 green:192/255.0 blue:133/255.0 alpha:1.0]
-#define REDCOLOR [UIColor colorWithRed:252/255.0 green:72/255.0 blue:46/255.0 alpha:1.0]
-#define BLUECOLOR [UIColor colorWithRed:18/255.0 green:113/255.0 blue:220/255.0 alpha:1.0]
+
+
 
 static NSString* const BUYMORE = @"看多";
 static NSString* const BUYLESS = @"看空";
-//static NSString* const BUYONCE = @"追单";
-//static NSString* const ReversePosition = @"反向开仓";
 static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
 
 @interface RootViewController ()<UIPickerViewDataSource,UIPickerViewDelegate,UIScrollViewDelegate,PopViewControllerDelegate,UITableViewDataSource,UITableViewDelegate,NSXMLParserDelegate,SingletonSocketDelegate>
@@ -37,7 +33,7 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
 @property (strong,nonatomic) UILabel *bearishBtnLabel;//看空价label
 @property (strong,nonatomic) UITableView *tableView;//在仓订单表格
 @property (strong,nonatomic) NSMutableArray *tableViewDataArray;//分笔清仓表格数据数组
-@property (strong,nonatomic) UIButton *nameLab;//商品名
+@property (strong,nonatomic) UILabel *nameLab;//商品名
 @property (strong,nonatomic) UILabel *delegateNumberLabel;//委托手数
 @property (strong,nonatomic) UILabel *newestPriceLabel;//买入价
 @property (strong,nonatomic) UIScrollView *rootView;//根视图
@@ -46,7 +42,6 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
 @property (strong,nonatomic) SettingView *settingView;//设置视图
 @property (strong,nonatomic) UIPickerView *picView;//滚动视图
 @property (assign,nonatomic) BOOL isOut;//设置视图是否推出
-//@property (copy,nonatomic) NSString *huobimingcheng;//货币代码
 @property (strong,nonatomic) LightningView *lightningView;//闪电图
 @property (assign,nonatomic) CGFloat priceForLightningView;//闪电图买价
 @property (strong,nonatomic) CADisplayLink *lightningDisplayLink;//闪电图定时器
@@ -61,14 +56,13 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
 @property (strong,nonatomic) UILabel *numberLabel;//买入界面显示买入手数label
 @property (strong,nonatomic) UILabel *shouyiLabel;//买入界面显示盈亏数label
 @property (strong,nonatomic) UILabel *yingkui;//买入界面显示"盈亏"label
-@property (strong,nonatomic) UILabel *$;//买入界面显示“$”符号label
+//@property (strong,nonatomic) UILabel *$;//买入界面显示“$”符号label
 @property (strong,nonatomic) UILabel *shou;//买入界面"手"的label
 @property (strong,nonatomic) UILabel *balanceLabel;//订单界面显示"盈亏(不计手续费)"label
 @property (strong,nonatomic) UILabel *yuanLabel;//订单界面显示盈亏数
 @property (strong,nonatomic) UILabel *yuantextLabel;//订单界面显示"$"label
 @property (strong,nonatomic) UILabel *lineLabel;//订单界面显示“分割线”
 @property (strong,nonatomic) UIActivityIndicatorView *activity;//刷新控件
-@property (strong,nonatomic) UIButton *allSellButton;//全部卖出
 @property (strong,nonatomic) UIRefreshControl *refresh;//在仓订单下拉刷新控件
 @property (assign,nonatomic) NSInteger lastChoose;//最后的选择
 @property (strong,nonatomic) NSMutableArray *priceArray;//闪电图历史价数组
@@ -78,7 +72,7 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
 @property (strong,nonatomic) NSMutableDictionary *nameDic;//商品中文字典
 @property (assign,nonatomic) long currentTimeStamp;//系统北京时间戳
 @property (copy,nonatomic) NSString *currentDate;//系统北京时间的日期字符串
-@property (assign,nonatomic) BOOL inTime;//是否在交易时间
+//@property (assign,nonatomic) BOOL inTime;//是否在交易时间
 @property (copy,nonatomic) NSString *iPhoneID;//iPhone唯一标识
 @property (copy,nonatomic) NSString *iPhoneIP;//iPhone的IP地址
 @property (strong,nonatomic) WebRequest *webRequest;//网络请求对象
@@ -87,35 +81,52 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
 @property (strong,nonatomic) NSMutableArray* asyncSocketArray;//socket接收数据的数组
 @property (strong,nonatomic) NSMutableArray* lastArray;//历史行情最后一个数据的数据
 @property (strong,nonatomic) NSMutableArray* newlastArray;//最新行情,计算盈亏
-@property (strong,nonatomic) UIButton* diancha;//止盈止损按钮
 @property (strong,nonatomic) NSString* dianchaString;//止盈止损大小(参数传给后台)
-@property (assign,nonatomic) NSInteger balance;//余额
 @property (assign,nonatomic) int secondsCountDown;//倒计时秒数
 @property (strong,nonatomic) NSTimer *countDownTimer;//倒计时定时器，买入后倒计时
 @property (strong,nonatomic) UILabel *labelText;//倒计时lable
-@property (strong,nonatomic) NSMutableArray* zhiyingArray;//止盈止损array；
 
 @end
 @implementation RootViewController
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self getCurrencyInformation];//获取货币信息
     [self initData];//初始化数据
     [self initControls];//初始化控件
     [self initNavigationBar];//初始化导航栏
     [self createRootScrollView];//创建根视图
     [self createSettingView];//创建设置视图
     [self getDataFromWebForPosi];//在仓数据的请求
-    [self getCurrentTotalPositionVolume:0];//获取当前选中商品的总持仓手数
     [self netStatus];//检测网络状态
     [self getDriverId];//获取手机唯一标示
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(createSocket) name:@"socket" object:nil];//从登录界面不登录直接返回，开启socket；
     SingleSocket* socker = [SingleSocket sharedInstance] ;//socket连接
     socker.delegate = self;
 }
+#pragma mark ****** 获取货币详情
+-(void)getCurrencyInformation{
+    //获取商品列表
+    NSMutableDictionary* dic = [[NSMutableDictionary alloc]initWithObjectsAndKeys:
+                                @"b4026263-704e-4e12-a64d-f79cb42962cc",@"TaskGuid",@"HBList",@"DataType",@"1234",@"UserID",nil];
+    WebRequest* web = [[WebRequest alloc]init];
+    [web webRequestWithDataDic:dic requestType:kRequestTypeTransformData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        if (error != nil) { }else{
+            NSString* eleString = [self getResultStringFromOperation:(NSData *)responseObject];
+            NSData *data = [eleString dataUsingEncoding:NSUTF8StringEncoding];
+            NSArray *bhArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+            if (bhArray.count == 0) {
+                UIAlertView *alart = [[UIAlertView alloc] initWithTitle:@"商品列表加载失败，请重启软件" message:nil delegate:self cancelButtonTitle:@"关闭" otherButtonTitles:nil];
+                [alart show];
+            }else {
+                WLog(@"%@",bhArray);
+                [[NSUserDefaults standardUserDefaults] setObject:bhArray forKey:@"BHList"];
+            }
+        }
+    }];
+}
 #pragma mark ****** 恒德8.0 ios手机端下载以及使用说明
 -(void)openBrowser {
     //打开浏览器
-    // Lanuch any iPhone developers fav site
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://xidue.com/hd/hd.html"]];
 }
 #pragma mark ****** socket单例创建
@@ -124,20 +135,18 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
 }
 #pragma mark ****** singleSocket代理方法
 -(void)didReadData:(NSString *)data{
-    NSLog(@"%@",data);
     int j = [[[NSUserDefaults standardUserDefaults] objectForKey:@"xuanzexiangmu"] intValue];
     NSString* name = _bhDic[_bhList[j][@"Name"]][@"Bh"];
     //拆分字符串成数组
     NSString* resultString;
     NSMutableArray* socketArray;
-    if ([data rangeOfString:@"\n"].location != NSNotFound) {
-        NSArray* arr = [data componentsSeparatedByString:@"\r"];
-        for (int i=0; i<arr.count; i++) {
-            resultString = arr[i];
-            NSArray* array = [resultString componentsSeparatedByString:@","];//数据数组
-            if (array.count > 1) {
-                socketArray = [NSMutableArray arrayWithArray:array];
-            }
+    NSArray* arr = [data componentsSeparatedByString:@"\r"];
+//    WLog(@"%@",arr);
+    for (int i=0; i<arr.count; i++) {
+        resultString = arr[i];
+        NSArray* array = [resultString componentsSeparatedByString:@","];//数据数组
+        if (array.count > 1) {
+            socketArray = [NSMutableArray arrayWithArray:array];
         }
     }
     for (int i = 0; i < _bhList.count; i++) {
@@ -152,6 +161,7 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
     if ([socketArray[1] isEqualToString:@"CloseOrders"]){//强平
         if ([socketArray[2] isEqualToString:_loginAccount]) {
             if ([[NSUserDefaults standardUserDefaults] boolForKey:@"login"]) {
+                [self buttonNotTouch];
                 if (_isShowAlertView) {
                     [self showAlert:@"平仓成功!"];
                 }
@@ -174,7 +184,6 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
     [self updateCurrentPriceAndProfits:YES];
 }
 -(void)SingetonError:(NSError *)error{
-//    NSLog(@"error%@",error.localizedDescription);
     NSString* errorStr = [NSString stringWithFormat:@"%@",error.localizedDescription];
     if ([errorStr isEqualToString:@"Network is unreachable"]) {
         return;
@@ -198,17 +207,15 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
 }
 #pragma mark button不能点击
 - (void)buttonNotTouch{
-    _bullishBtn.enabled = _bearishBtn.enabled = _allSellButton.enabled = NO;
+    _bullishBtn.enabled = _bearishBtn.enabled = NO;
     [_bullishBtn setTitleColor:[UIColor colorWithRed:252/255.0 green:108/255.0 blue:87/255.0 alpha:1.0] forState:UIControlStateNormal];
     [_bearishBtn setTitleColor:[UIColor colorWithRed:63/255.0 green:140/255.0 blue:226/255.0 alpha:1.0] forState:UIControlStateNormal];
-    [_allSellButton setTitleColor:[UIColor colorWithRed:185/255.0 green:153/255.0 blue:106/255.0 alpha:1.0] forState:UIControlStateNormal];
 }
 #pragma mark button可以点击
 - (void)buttonCanTouch{
-    _bullishBtn.enabled = _bearishBtn.enabled = _allSellButton.enabled = YES;
+    _bullishBtn.enabled = _bearishBtn.enabled = YES;
     [_bullishBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [_bearishBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [_allSellButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
 }
 #pragma mark 检测网络状态
 -(void)netStatus{
@@ -216,11 +223,10 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
     [[AFNetworkReachabilityManager sharedManager] startMonitoring];
     // 检测网络连接的单例,网络变化时的回调方法
     [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
-        if(status==AFNetworkReachabilityStatusNotReachable){
+        if(status == AFNetworkReachabilityStatusNotReachable){
             [[SingleSocket sharedInstance] stopSocket];
             [self alertWithTitle:@"请求超时,请检查网络连接" cancelButtonTitle:@"关闭" otherButtonTitle:nil];
-        }else if(status== AFNetworkReachabilityStatusReachableViaWiFi){
-//             [_asyncSocket connectToHost:_IP_ADDRESS onPort:_SERVER_PORT error:nil];
+        }else if(status == AFNetworkReachabilityStatusReachableViaWiFi){
             [[SingleSocket sharedInstance] socketConnectHost];
             UIView *midView=[[UIView alloc]initWithFrame:CGRectMake(0, HEIGHT/2, WIDTH, 30)];
             midView.backgroundColor=[UIColor colorWithRed:220.0/255 green:236.0/255 blue:202.0/255 alpha:0.3];
@@ -238,8 +244,7 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
              } completion:^(BOOL finished) {
                  [midView removeFromSuperview];
              }];
-        }else if (status==AFNetworkReachabilityStatusReachableViaWWAN){
-//             [_asyncSocket connectToHost:_IP_ADDRESS onPort:_SERVER_PORT error:nil];
+        }else if (status == AFNetworkReachabilityStatusReachableViaWWAN){
             [[SingleSocket sharedInstance] socketConnectHost];
             UIView *midView=[[UIView alloc]initWithFrame:CGRectMake(0, HEIGHT/2, WIDTH, 30)];
             midView.backgroundColor=[UIColor colorWithRed:220.0/255 green:236.0/255 blue:202.0/255 alpha:0.3];
@@ -262,11 +267,10 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
 }
 #pragma mark 初始化数据
 - (void)initData{
-    _dianchaString = @"8";
     [self initBaseData];//初始化基本数据
     [self getSystemTime];//获取系统北京的时间
 //    [self getHBWorkTime];//获取商品交易时间
-//    [self chooseDianCha];//获取止盈止损
+    [self chooseDianCha];//获取止盈止损
 }
 #pragma mark 初始化基本数据
 - (void)initBaseData{
@@ -280,11 +284,9 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
     _iPhoneIP = [[NSUserDefaults standardUserDefaults] objectForKey:@"iPhoneIP"];//手机IP地址
     [[NSUserDefaults standardUserDefaults]setInteger:0 forKey:@"jiaoyishuliang"];
     [[NSUserDefaults standardUserDefaults]setInteger:0 forKey:@"xuanzexiangmu"];
-//    _shouxufei = [_bhList[0][@"State"] intValue];
     _bhList = [[NSUserDefaults standardUserDefaults] objectForKey:@"BHList"];//获取商品列表
-    /*
-     [
-         {
+    /**
+     [{
              "Name": "美原油",
              "Bh": "CLF6",
              "Increment": 0.01,
@@ -293,8 +295,7 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
              "Price": 0,
              "ASKPrice": 0,
              "RMB": 25
-         },
-         {
+         },{
              "Name": "恒生指数",
              "Bh": "HKZ5",
              "Increment": 1,
@@ -303,25 +304,21 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
              "Price": 0,
              "ASKPrice": 0,
              "RMB": 25
-         }
-     ]
+         }]
      */
     _bhDic = [NSMutableDictionary dictionary];//商品字典
     _nameDic = [NSMutableDictionary dictionary];//商品中文名字典
-    /*
-     {
-         "恒生指数" = {
+    /**
+     { "恒生指数" = {
              Bh = HKZ5;
              NewestPrice = 0;
              SinglePrice = 2000;
-             DecimalPoint = 1
-         };
+             DecimalPoint = 1 };
          "美原油" = {
              Bh = CLF6;
              NewestPrice = 0;
              SinglePrice = 13;
-             DecimalPoint = 0.01
-         };
+             DecimalPoint = 0.01  };
      }
      */
     for (NSDictionary *dic in _bhList) {
@@ -418,12 +415,12 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
                 prices+=[dic[@"Profit"] longValue];//累加盈亏
                 volumes+=[dic[@"Volume"] intValue];//累加总手数
                 [_tableViewDataArray insertObject:model atIndex:0];
-                if ([_nameLab.currentTitle isEqualToString:_nameDic[dic[@"Symbol"]]]) {
+                if ([_nameLab.text isEqualToString:_nameDic[dic[@"Symbol"]]]) {
                     [array insertObject:model atIndex:0];
                 }
             }
             [_tableView reloadData];
-
+            
             if (array.count == 0) {
                 _duoOrKongLabel.text = @"   ";
                 _numberLabel.text = _shouyiLabel.text = @"0";
@@ -437,20 +434,19 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
                      for (NSDictionary *dic in jsonDic) {
                         //刷新手数
                         if (model.buyLessOrMore != nil) {
-                            if ([_nameLab.currentTitle isEqualToString:_nameDic[dic[@"Symbol"]]]) {
-//                                _duoOrKongLabel.text = [NSString stringWithFormat:@"看%@",model.buyLessOrMore];
+                            if ([_nameLab.text isEqualToString:_nameDic[dic[@"Symbol"]]]) {
                                 UIFont *font = _duoOrKongLabel.font = [UIFont systemFontOfSize:18.0f];
                                 CGSize size1 = [_duoOrKongLabel.text boundingRectWithSize:CGSizeMake(1000, 15) options:NSStringDrawingUsesLineFragmentOrigin attributes:[NSDictionary dictionaryWithObject:font forKey:NSFontAttributeName] context:nil].size;
                                 _duoOrKongLabel.frame = CGRectMake(0.094*WIDTH, CGRectGetMaxY(_bullishBtn.frame)+10, size1.width, _duoOrKongLabel.frame.size.height);
                                 _numberLabel.text = [NSString stringWithFormat:@"%d",vol];
                                 [self updateWidthOfVolume:_numberLabel.text];
                                 
-                                _shouyiLabel.text = [NSString stringWithFormat:@"%ld",pri];
-                                _shouyiLabel.textColor = (pri < 0 ? [UIColor greenColor] : [UIColor colorWithRed:250/255.0 green:67/255.0 blue:0 alpha:1]);
-                                _$.frame = CGRectMake(WIDTH-40, _duoOrKongLabel.frame.origin.y+7, 15, 10);
-                                CGSize $size = [_shouyiLabel.text sizeWithAttributes:[NSDictionary dictionaryWithObject:[UIFont systemFontOfSize:22.0] forKey:NSFontAttributeName]];
-                                _shouyiLabel.frame = CGRectMake(_$.frame.origin.x-$size.width, _duoOrKongLabel.frame.origin.y-5, $size.width, $size.height);
-                                _yingkui.frame = CGRectMake(_shouyiLabel.frame.origin.x-_yingkui.bounds.size.width, _shouyiLabel.frame.origin.y, _yingkui.bounds.size.width, _shouyiLabel.bounds.size.height);
+//                                _shouyiLabel.text = [NSString stringWithFormat:@"%ld",pri];
+//                                _shouyiLabel.textColor = (pri < 0 ? [UIColor greenColor] : [UIColor colorWithRed:250/255.0 green:67/255.0 blue:0 alpha:1]);
+//                                _$.frame = CGRectMake(WIDTH-40, _duoOrKongLabel.frame.origin.y+7, 15, 10);
+//                                CGSize $size = [_shouyiLabel.text sizeWithAttributes:[NSDictionary dictionaryWithObject:[UIFont systemFontOfSize:22.0] forKey:NSFontAttributeName]];
+//                                _shouyiLabel.frame = CGRectMake(_$.frame.origin.x-$size.width, _duoOrKongLabel.frame.origin.y-5, $size.width, $size.height);
+//                                _yingkui.frame = CGRectMake(_shouyiLabel.frame.origin.x-_yingkui.bounds.size.width, _shouyiLabel.frame.origin.y, _yingkui.bounds.size.width, _shouyiLabel.bounds.size.height);
                             }
                         }
                     }
@@ -481,7 +477,7 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
     _rootView.delegate = self;
     _rootView.pagingEnabled = YES;
     _rootView.bounces = NO;
-    _rootView.backgroundColor = [UIColor blackColor];
+    _rootView.backgroundColor = [UIColor colorWithRed:10/255.0 green:11/255.0 blue:20/255.0 alpha:1];
     [self.view addSubview:_rootView];
     [self createBuyView];//创建买入页面
     [self createPositionView];//买入后持仓页面
@@ -497,27 +493,26 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
     _picView = [[UIPickerView alloc]initWithFrame:CGRectMake(WIDTH*0.25, _settingView.bounds.size.height*0.5-150, WIDTH*0.5, 200)];
     _picView.delegate = self;
     _picView.dataSource = self;
-    _picView.showsSelectionIndicator = YES;
-//    int j = [[[NSUserDefaults standardUserDefaults] objectForKey:@"xuanzexiangmu"] intValue];
-//    [_picView selectRow:0 inComponent:j animated:YES];
+    _picView.showsSelectionIndicator = YES;;
     [_settingView addSubview:_picView];
     //------ 操作成功弹窗 ------
     UIView *successView = [[UIView alloc] initWithFrame:CGRectMake(WIDTH*0.5-90, CGRectGetMaxY(_picView.frame)+5, 180, 31)];
     [_settingView addSubview:successView];
     UILabel *successTitle = [[UILabel alloc] initWithFrame:CGRectMake(0, 5.5, 120, 20)];
     successTitle.text = @"操作成功弹窗";
-    successTitle.font = [UIFont systemFontOfSize:20.0];
+    successTitle.font = [UIFont systemFontOfSize:18.0];
     successTitle.textColor = [UIColor colorWithRed:204/255.0 green:204/255.0 blue:204/255.0 alpha:1.0];
     [successView addSubview:successTitle];
-    UISwitch* swit =[[UISwitch alloc]initWithFrame:CGRectMake(successView.bounds.size.width-51, 0, 51, 31)];
+    UISwitch* swit =[[UISwitch alloc] initWithFrame:CGRectMake(successView.bounds.size.width-51, 0, 51, 31)];
     [swit setOn:YES];
     [swit addTarget:self action:@selector(showAlartView:) forControlEvents:UIControlEventValueChanged];
     [successView addSubview:swit];
+    //------  确定按钮 ------
     UIButton* yesButton = [UIButton buttonWithType:UIButtonTypeCustom];
     yesButton.frame = CGRectMake(WIDTH/2 - 80, CGRectGetMaxY(successView.frame)+50, 160, 40);
     [yesButton setTitle:@"确定" forState:UIControlStateNormal];
-    [yesButton addTarget:self action:@selector(settingBtnClick) forControlEvents:UIControlEventTouchUpInside];
-    [yesButton setTitleColor:[UIColor colorWithRed:0.82 green:0.82 blue:0.82 alpha:1.00] forState:UIControlStateNormal];
+    [yesButton addTarget:self action:@selector(chooseDelegateNum) forControlEvents:UIControlEventTouchUpInside];
+    [yesButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     yesButton.backgroundColor = [UIColor redColor];
     yesButton.layer.masksToBounds = YES;
     yesButton.layer.cornerRadius = 8;
@@ -529,12 +524,11 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
 - (void)createBuyView{
     //------ 商品名 ------
     int num = [[[NSUserDefaults standardUserDefaults]objectForKey:@"xuanzexiangmu"] intValue];
-    _nameLab = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    _nameLab.frame = CGRectMake(WIDTH/2.0-100, 15, 200, (HEIGHT-60)*0.045);
-    [_nameLab setTitle:_bhList[num][@"Name"] forState:UIControlStateNormal];
-    _nameLab.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:18.0f];
-    _nameLab.tintColor = [UIColor whiteColor];
-//    [_nameLab addTarget:self action:@selector(settingBtnClick) forControlEvents:UIControlEventTouchUpInside];
+    _nameLab = [[UILabel alloc]initWithFrame:CGRectMake(WIDTH/2.0-100, 15, 200, (HEIGHT-60)*0.045)];
+    _nameLab.textAlignment = NSTextAlignmentCenter;
+    _nameLab.text = _bhList[num][@"Name"];
+    _nameLab.font = [UIFont fontWithName:@"Helvetica" size:18.0f];
+    _nameLab.textColor = [UIColor whiteColor];
     [self.rootView addSubview:_nameLab];
     //------ 最新价(price) ------
     _newestPriceLabel = [[UILabel alloc]initWithFrame:CGRectMake(WIDTH/2 - 70, CGRectGetMaxY(_nameLab.frame)+7.5, 140, 36)];
@@ -544,23 +538,14 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
     _newestPriceLabel.font = [UIFont systemFontOfSize:36.0];
     [self.rootView addSubview:_newestPriceLabel];
     
-//    _diancha = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    _diancha.frame = CGRectMake(WIDTH - 140, _newestPriceLabel.frame.origin.y, 120, 36);
-////    [_diancha setTitle:@"快8点" forState:UIControlStateNormal];
-//    _diancha.titleLabel.font = [UIFont systemFontOfSize:18.0f];
-//    [_diancha setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-//    [_diancha addTarget:self action:@selector(zhiyingzhisunChooice) forControlEvents:UIControlEventTouchUpInside];
-//    [self.rootView addSubview:_diancha];
     //------ 闪电图按钮 ------
-    UIButton* lightningBtn = [[UIButton alloc] initWithFrame:CGRectMake((WIDTH-WIDTH*0.3)/2, CGRectGetMaxY(_newestPriceLabel.frame)+16, WIDTH* 0.3, (HEIGHT-60)* 0.04)];
-    [lightningBtn setTitle:@"闪电图" forState:UIControlStateNormal];
-    lightningBtn.selected = YES;
-    lightningBtn.titleLabel.font=[UIFont systemFontOfSize:12.0];
-    [lightningBtn setTitleColor:GLODENCOLOR forState:UIControlStateSelected];
-    lightningBtn.tag = 1;
-    [self.rootView addSubview:lightningBtn];
+    UILabel* lightningLab = [[UILabel alloc]initWithFrame:CGRectMake((WIDTH-WIDTH*0.3)/2, CGRectGetMaxY(_newestPriceLabel.frame)+16, WIDTH* 0.3, (HEIGHT-60)* 0.04)];
+    lightningLab.text = @"闪电图";
+    lightningLab.textAlignment = NSTextAlignmentCenter;
+    lightningLab.textColor = GLODENCOLOR;
+    [self.rootView addSubview:lightningLab];
     //------ 闪电图按钮线 ------
-    _buttonLine1=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(lightningBtn.frame)-WIDTH*0.3, CGRectGetMaxY(lightningBtn.frame)-2, WIDTH* 0.3, 2)];
+    _buttonLine1=[[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(lightningLab.frame)-WIDTH*0.3, CGRectGetMaxY(lightningLab.frame)-2, WIDTH* 0.3, 2)];
     _buttonLine1.backgroundColor=GLODENCOLOR;
     [self.rootView addSubview:_buttonLine1];
     //------ 闪电图视图 ------
@@ -602,20 +587,8 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
     
     UIButton* chooseNum = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     chooseNum.frame = _delegateNumberLabel.frame;
-    [chooseNum addTarget:self action:@selector(settingBtnClick) forControlEvents:UIControlEventTouchUpInside];
+    [chooseNum addTarget:self action:@selector(chooseDelegateNum) forControlEvents:UIControlEventTouchUpInside];
     [self.rootView addSubview:chooseNum];
-    
-    //------ 全部清仓按钮 ------
-    _allSellButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    _allSellButton.frame = CGRectMake(17+buttonWidth, _bullishBtn.frame.origin.y, buttonWidth, 44);
-//    [_allSellButton setTitle:@"全部清仓" forState:UIControlStateNormal];
-//    [_allSellButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-//    _allSellButton.titleLabel.font = [UIFont systemFontOfSize:20.0];
-//    _allSellButton.layer.cornerRadius = 10.0;
-//    _allSellButton.layer.masksToBounds = YES;
-//    _allSellButton.backgroundColor = GLODENCOLOR;
-//    [_allSellButton addTarget:self action:@selector(allSellbuttonClick) forControlEvents:UIControlEventTouchUpInside];
-//    [self.rootView addSubview:_allSellButton];
     //------ 倒计时lable ------
     _labelText = [[UILabel alloc]initWithFrame:CGRectMake(WIDTH - 140, _newestPriceLabel.frame.origin.y, 120, 36)];
     _labelText.textColor = [UIColor whiteColor];
@@ -640,7 +613,7 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
 //    _bearishBtnLabel.textColor = BLUECOLOR;
 //    _bearishBtnLabel.textAlignment = NSTextAlignmentCenter;
 //    _bearishBtnLabel.font = [UIFont systemFontOfSize:11.0];
-////    [self.rootView addSubview:_bearishBtnLabel];
+//    [self.rootView addSubview:_bearishBtnLabel];
     //------  主界面提示买入的手数是看多还是看空label ------
     _duoOrKongLabel = [[UILabel alloc]initWithFrame:CGRectMake(0.094*WIDTH, CGRectGetMaxY(_bullishBtn.frame)+10, 20, 18)];
 //    _duoOrKongLabel.text = @"看多/空";
@@ -662,21 +635,21 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
     [self.rootView addSubview:_shou];
     //------ 买入界面"盈亏"的label ------
     _yingkui = [[UILabel alloc]initWithFrame:CGRectMake(_bearishBtn.frame.origin.x, _duoOrKongLabel.frame.origin.y, 40, 15)];
-    _yingkui.text = @"盈亏";
-    _yingkui.textColor = [UIColor colorWithRed:0.95 green:0.78 blue:0.52 alpha:1];
-    [self.rootView addSubview:_yingkui];
+//    _yingkui.text = @"盈亏";
+//    _yingkui.textColor = [UIColor colorWithRed:0.95 green:0.78 blue:0.52 alpha:1];
+//    [self.rootView addSubview:_yingkui];
     //------ 盈亏数label ------
     _shouyiLabel = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(_yingkui.frame), _duoOrKongLabel.frame.origin.y, 12, 17)];
-    _shouyiLabel.text = @"+0";
-    _shouyiLabel.numberOfLines = 0;
-    _shouyiLabel.font = [UIFont systemFontOfSize:22.0f];
-    [self.rootView addSubview:_shouyiLabel];
+//    _shouyiLabel.text = @"+0";
+//    _shouyiLabel.numberOfLines = 0;
+//    _shouyiLabel.font = [UIFont systemFontOfSize:22.0f];
+//    [self.rootView addSubview:_shouyiLabel];
     //------ "$"的label ------
-     _$ = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(_shouyiLabel.frame), _shouyiLabel.frame.origin.y + 5, 15, 10)];
-    _$.font = [UIFont systemFontOfSize:12.0f];
-    _$.text = @"$";
-    _$.textColor = [UIColor grayColor];
-    [self.rootView addSubview:_$ ];
+//     _$ = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(_shouyiLabel.frame), _shouyiLabel.frame.origin.y + 5, 15, 10)];
+//    _$.font = [UIFont systemFontOfSize:12.0f];
+//    _$.text = @"$";
+//    _$.textColor = [UIColor grayColor];
+//    [self.rootView addSubview:_$ ];
 }
 #pragma mark ****** 倒计时方法
 -(void)timeFireMethod{
@@ -691,32 +664,6 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
         [self buttonCanTouch];
     }
 }
-/**
-#pragma mark ****** 选择止盈止损
--(void)zhiyingzhisunChooice{
-    UIAlertController* alert = [UIAlertController alertControllerWithTitle:nil message:@"选择止盈止损" preferredStyle:UIAlertControllerStyleAlert];
-    NSString *Point;
-    for (int i=0; i < _zhiyingArray.count; i++) {
-        if (i == 0) {
-            Point = [NSString stringWithFormat:@"快%@点(手续费:%@)",_zhiyingArray[i][@"Point"],_zhiyingArray[i][@"Commission"]];
-        }else{
-            Point = [NSString stringWithFormat:@"乐%@点(手续费:%@)",_zhiyingArray[i][@"Point"],_zhiyingArray[i][@"Commission"]];
-        }
-        NSString* num = [NSString stringWithFormat:@"%@",_zhiyingArray[i][@"Point"]];
-        UIAlertAction *laterAction = [UIAlertAction actionWithTitle:Point style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            _dianchaString = _zhiyingArray[i][@"Point"];//订单止盈止损
-            if ([num isEqualToString:@"7"]) {
-                [_diancha setTitle:[NSString stringWithFormat:@"快%@点",num] forState:UIControlStateNormal];
-            }else{
-                [_diancha setTitle:[NSString stringWithFormat:@"乐%@点",num] forState:UIControlStateNormal];
-            }
-        }];
-        [alert addAction:laterAction];
-    }
-    UIAlertAction *cancerAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:nil];
-    [alert addAction:cancerAction];
-    [self presentViewController:alert animated:YES completion:nil];
-}
 #pragma mark ****** 止盈止损数据请求
 -(void)chooseDianCha{
     NSMutableDictionary* parameters = [[NSMutableDictionary alloc]initWithObjectsAndKeys:@"1234567890",@"DriverID",@"",@"UserID",@"b4026263-704e-4e12-a64d-f79cb42962cc",@"TaskGuid",@"QPDSXF",@"DataType", nil];
@@ -725,17 +672,15 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
         NSString *resultString = [self getResultStringFromOperation:(NSData *)responseObject];
         NSData* data = [resultString dataUsingEncoding:NSUTF8StringEncoding];
         NSArray* dataArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-        _zhiyingArray = [NSMutableArray arrayWithArray:dataArray];
-        [_diancha setTitle:[NSString stringWithFormat:@"快%@点",dataArray[0][@"Point"]] forState:UIControlStateNormal];
         _dianchaString = [NSString stringWithFormat:@"%@",dataArray[0][@"Point"]];
     }];
 }
- */
+
 #pragma mark 创建闪电图,请求历史行情
 - (void)createLightningView{
     //请求的历史历史行情数字
     int j = [[[NSUserDefaults standardUserDefaults] objectForKey:@"xuanzexiangmu"] intValue];
-    NSMutableDictionary *parameters = [[NSMutableDictionary alloc]initWithObjectsAndKeys:@"BFEBFBFF000306C3F0:79:59:E0:0F:D2",@"DriverID",TASKGUID,@"TaskGuid",@"",@"UserID",@"MT4DataHistory",@"DataType",@"300",@"Top",_bhList[j][@"Bh"],@"Type",nil];
+    NSMutableDictionary *parameters = [[NSMutableDictionary alloc]initWithObjectsAndKeys:_iPhoneID,@"DriverID",TASKGUID,@"TaskGuid",@"",@"UserID",@"MT4DataHistory",@"DataType",@"300",@"Top",_bhList[j][@"Bh"],@"Type",nil];
     [_webRequest webRequestWithDataDic:parameters requestType:kRequestTypeTransformData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         if (error!=nil) {[self alertWithTitle:@"请求失败" cancelButtonTitle:@"关闭" otherButtonTitle:nil];} else {
             NSString *resultString = [self getResultStringFromOperation:(NSData *)responseObject];
@@ -774,6 +719,9 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
                 _newestPriceLabel.text = [NSString stringWithFormat:@"%@",[dataArray firstObject]];
             }
             [_activity stopAnimating];
+        }
+        if (_tableViewDataArray.count > 0 && [[NSUserDefaults standardUserDefaults] boolForKey:@"login"]) {
+            [self buttonNotTouch];
         }
     }];
 }
@@ -919,9 +867,6 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
         }
         [self ThreeTimeLabelLeftMove];//刷新闪电图下面显示的3个时间label
     }
-//    if (_lightningStepper%1200==0) {//20秒一次
-//        [self getDataFromWebForPosi];//同步在仓订单
-//    }
 }
 #pragma mark 刷新闪电图下面显示的3个时间label
 - (void)ThreeTimeLabelLeftMove{
@@ -941,7 +886,7 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
     BOOL login = [[NSUserDefaults standardUserDefaults] boolForKey:@"login"];
     if (login) {
             double prices = 0;//当前总盈亏
-        NSMutableArray* array = [[NSMutableArray alloc]init];
+//        NSMutableArray* array = [[NSMutableArray alloc]init];
             for (holdPositionModel *holdPosition in _tableViewDataArray) {
                 double profit = 0;
                 for (NSInteger i = 0; i<_bhList.count; i++) {
@@ -949,19 +894,23 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
                         if ([holdPosition.buyLessOrMore isEqualToString:@"Buy"]) {//看多盈利: (关仓价格-开仓价格)*单价*手数
                             if ( [_bhList[i][@"Bh"] isEqualToString:_newlastArray[2]]) {
                                 holdPosition.ClosePrice = (NSNumber *)_newlastArray[3];
-                                if ([_newlastArray[3] floatValue] >= [holdPosition.TakeProfit floatValue] || [_newlastArray[3] floatValue] <= [holdPosition.StopLoss floatValue]) {
-                                    [array addObject:holdPosition];
-                                }
+//                                if ([_newlastArray[3] floatValue] >= [holdPosition.TakeProfit floatValue] || [_newlastArray[3] floatValue] <= [holdPosition.StopLoss floatValue]) {
+//                                    [array addObject:holdPosition];
+//                                }
                             }
                             profit = ([holdPosition.ClosePrice doubleValue] - [holdPosition.OpenPrice doubleValue]) * [_bhDic[_bhList[i][@"Name"]][@"SinglePrice"] doubleValue]*[holdPosition.Volume intValue];
+                            _lightningView.price = profit;
                         }else{//看空盈利: (开仓价格-关仓价格)*单价*手数
                             if ( [_bhList[i][@"Bh"] isEqualToString:_newlastArray[2]]) {
-                                holdPosition.ClosePrice = (NSNumber *)_newlastArray[3];
-                                if ([_newlastArray[3] floatValue] <= [holdPosition.TakeProfit floatValue] || [_newlastArray[3] floatValue] >= [holdPosition.StopLoss floatValue]) {
-                                    [array addObject:holdPosition];
-                                }
+                                float num =[_bhList[0][@"Increment"] floatValue];
+                                float Increment = [_newlastArray[3] floatValue] + num;
+                                holdPosition.ClosePrice = [NSNumber numberWithFloat:Increment];
+//                                if ([_newlastArray[4] floatValue] <= [holdPosition.TakeProfit floatValue] || [_newlastArray[4] floatValue] >= [holdPosition.StopLoss floatValue]) {
+//                                    [array addObject:holdPosition];
+//                                }
                             }
-                            profit = ([holdPosition.OpenPrice doubleValue] - [holdPosition.ClosePrice doubleValue])*[_bhDic[_bhList[i][@"Name"]][@"SinglePrice"] doubleValue]*[holdPosition.Volume intValue];
+                            profit = ([holdPosition.OpenPrice doubleValue] - [holdPosition.ClosePrice doubleValue]) * [_bhDic[_bhList[i][@"Name"]][@"SinglePrice"] doubleValue]*[holdPosition.Volume intValue];
+                            _lightningView.price = profit;
                         }
                     }
                 }
@@ -975,7 +924,7 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
         double pric = 0;//当前总盈亏
         int nums = 0;
         for (int i=0; i<_bhList.count; i++) {
-            if ([_nameLab.currentTitle isEqualToString:_bhList[i][@"Name"]]) {
+            if ([_nameLab.text isEqualToString:_bhList[i][@"Name"]]) {
                 if ([_newlastArray[2] isEqualToString:_bhList[i][@"Bh"]]) {
                         for (holdPositionModel *holdPosition in _tableViewDataArray) {
                             double profit = 0;
@@ -988,12 +937,12 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
                             }
                         }
                     _numberLabel.text = [NSString stringWithFormat:@"%d",nums];
-                    _shouyiLabel.text = [NSString stringWithFormat:@"%.0f",pric];
-                    _shouyiLabel.textColor = (pric < 0 ? [UIColor greenColor] : [UIColor colorWithRed:250/255.0 green:67/255.0 blue:0 alpha:1]);
+//                    _shouyiLabel.text = [NSString stringWithFormat:@"%.0f",pric];
+//                    _shouyiLabel.textColor = (pric < 0 ? [UIColor greenColor] : [UIColor colorWithRed:250/255.0 green:67/255.0 blue:0 alpha:1]);
                 }
             }
         }
-        [_tableViewDataArray removeObjectsInArray:array];
+//        [_tableViewDataArray removeObjectsInArray:array];
         [_tableView reloadData];
          [self updateWidthOfVolume:_numberLabel.text];
         
@@ -1004,13 +953,14 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
         _yuanLabel.frame = CGRectMake(WIDTH+20, CGRectGetMaxY(_balanceLabel.frame)+HEIGHT*0.026, priceSize.width, 30);
         _yuantextLabel.frame = CGRectMake(CGRectGetMaxX(_yuanLabel.frame)+5, CGRectGetMaxY(_balanceLabel.frame)+HEIGHT*0.0264+4, WIDTH*0.09, HEIGHT*0.044);
         
-        _$.frame = CGRectMake(WIDTH-40, _duoOrKongLabel.frame.origin.y+5, 15, 12);
-        CGSize $size = [_shouyiLabel.text sizeWithAttributes:[NSDictionary dictionaryWithObject:[UIFont systemFontOfSize:22.0] forKey:NSFontAttributeName]];
-        _shouyiLabel.frame = CGRectMake(_$.frame.origin.x-$size.width, _duoOrKongLabel.frame.origin.y-5, $size.width, $size.height);
-        _yingkui.frame = CGRectMake(_shouyiLabel.frame.origin.x-_yingkui.bounds.size.width, _shouyiLabel.frame.origin.y, _yingkui.bounds.size.width, _shouyiLabel.bounds.size.height);
+//        _$.frame = CGRectMake(WIDTH-40, _duoOrKongLabel.frame.origin.y+5, 15, 12);
+//        CGSize $size = [_shouyiLabel.text sizeWithAttributes:[NSDictionary dictionaryWithObject:[UIFont systemFontOfSize:22.0] forKey:NSFontAttributeName]];
+//        _shouyiLabel.frame = CGRectMake(_$.frame.origin.x-$size.width, _duoOrKongLabel.frame.origin.y-5, $size.width, $size.height);
+//        _yingkui.frame = CGRectMake(_shouyiLabel.frame.origin.x-_yingkui.bounds.size.width, _shouyiLabel.frame.origin.y, _yingkui.bounds.size.width, _shouyiLabel.bounds.size.height);
         [_tableView reloadData];
     }else{
-        _shouyiLabel.text = @"0";
+//        _shouyiLabel.text = @"0";
+        _numberLabel.text = @"0";
     }
 }
 #pragma mark 获取商品交易时间
@@ -1124,7 +1074,8 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
     if ([_currentDate isEqualToString:@"16:00:00"]) {
         [[NSUserDefaults standardUserDefaults] setObject:@"2" forKey:@"xuanzexiangmu"];
         [_lightningView removeFromSuperview];
-        [_nameLab setTitle:_bhList[2][@"Name"] forState:UIControlStateNormal];
+//        [_nameLab setTitle:_bhList[2][@"Name"] forState:UIControlStateNormal];
+        _nameLab.text = _bhList[2][@"Name"];
         [self createLightningView];
     }
     _currentTimeStamp = (long)[date timeIntervalSince1970];
@@ -1138,29 +1089,12 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
 #pragma mark 看多(看空)的买入/追单
 - (void)buy:(NSString *)bullishOrBearish{
     int i = [[[NSUserDefaults standardUserDefaults] objectForKey:@"jiaoyishuliang"] intValue];
-//    NSDictionary *userDic = [[NSUserDefaults standardUserDefaults] objectForKey:@"userDic"];
-//    NSMutableDictionary *dic1 = [[NSMutableDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInt:0],@"Volume",@"",@"Guid",@"b4026263-704e-4e12-a64d-f79cb42962cc",@"TaskGuid",@"Sys_Volume",@"DataType",[NSNumber numberWithInt:0],@"Seconds",[NSNumber numberWithInt:0],@"Stoploss",[NSNumber numberWithInt:0],@"Takeprofit",[NSNumber numberWithBool:YES],@"SysUser",userDic[@"LoginAccount"],@"Version", nil];
-//    WebRequest *web = [[WebRequest alloc] init];
-//    [web webRequestWithDataDic:dic1 requestType:kRequestTypeTransformData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
-//        NSString *resultStr = [self getResultStringFromOperation:(NSData *)responseObject];
-//        NSData *jsonData = [resultStr dataUsingEncoding:NSUTF8StringEncoding];
-//        NSArray *jsonObject = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:nil];
-//        [[NSUserDefaults standardUserDefaults] setObject:jsonObject[0][@"Volume"] forKey:@"maxVolume"];
-        //获取单个货币的最大持仓手数
-//        int maxVolume = [jsonObject[0][@"Volume"] intValue];
-//        if (i + _positionVolume >= maxVolume) {
-//            [self showAlert:@"超出交易手数"];
-//            [self buttonCanTouch];
-//            return;
-//        }
         _alertStr = [NSString stringWithFormat:@"您已成功看%@买入%@，请进入订单查看相关信息！",bullishOrBearish,_volumeArray[i]];
     if (_tableViewDataArray.count == 0) {
         [self BuyRequestData:bullishOrBearish];
     }else{
         [self showAlert:@"已有订单!"];
     }
-    
-//    }];
 }
 #pragma mark 看多(看空)的请求数据
 - (void)BuyRequestData:(NSString *)bullishOrBearish{
@@ -1206,65 +1140,6 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
         [_activity stopAnimating];
     }];
 }
-#pragma mark 反向开仓
-/**
-- (void)reversePosition:(NSString *)bullishOrBearish{
-    NSMutableArray *arr = [NSMutableArray array];
-    NSInteger totalVolum=0;
-    [_activity startAnimating];//菊花开始转
-    [self buttonNotTouch];//设置button不能被电击
-    int j = [[[NSUserDefaults standardUserDefaults] objectForKey:@"xuanzexiangmu"] intValue];//现在选择的商品
-    for (holdPositionModel* model in _tableViewDataArray) {
-        if ([model.name isEqualToString:_nameDic[_bhList[j][@"Bh"]]]) {//如果持仓界面和现在选择的商品名称相同，则统计订单编号
-            [arr addObject:[NSString stringWithFormat:@"%@", model.OrderNumber]];
-            totalVolum = totalVolum+[model.Volume intValue];//统计手数
-        }
-    }
-    NSString *orderNumbers = [arr componentsJoinedByString:@","];
-    NSMutableDictionary *dataDic = [NSMutableDictionary dictionaryWithObjectsAndKeys:_iPhoneID,@"DriverID",_iPhoneIP,@"Ip",TASKGUID,@"TaskGuid",_loginAccount,@"LoginAccount",@"CloseOrderS",@"DataType",orderNumbers,@"OrderNumberS",nil];
-    [_webRequest webRequestWithDataDic:dataDic requestType:kRequestTypeSetData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
-        if (error!=nil) {
-            [self alertWithTitle:[NSString stringWithFormat:@"%@",error] cancelButtonTitle:@"确定" otherButtonTitle:nil];
-        }else{
-            NSString *resultString = [self getResultStringFromOperation:(NSData *)responseObject];
-            if ([resultString isEqualToString:@"True"]) {//如果卖出成功
-                NSMutableArray* arrayCount = [NSMutableArray array];//设置一个array添加要删除的商品
-                for (int a = 0; a<_tableViewDataArray.count; a++) {
-                    holdPositionModel* model = (holdPositionModel*)_tableViewDataArray[a];
-                    if ([model.name isEqualToString:_nameDic[_bhList[j][@"Bh"]]]) {
-                        [arrayCount addObject:_tableViewDataArray[a]];//添加要删除的元素到array
-                    }
-                }
-                [_tableViewDataArray removeObjectsInArray:arrayCount];//删除要删除的元素数组
-                [_tableView reloadData];
-                NSNumber *totalVolume = [NSNumber numberWithInteger:totalVolum];//总手数
-                NSString *dataType = nil;
-                if ([bullishOrBearish isEqualToString:@"多"]) {
-                    dataType = @"OpenBuy-New";
-                }else if ([bullishOrBearish isEqualToString:@"空"]){
-                    dataType = @"OpenSell-New";
-                }
-                _userDic = [[NSMutableDictionary alloc] initWithObjectsAndKeys:_iPhoneID,@"DriverID",_iPhoneIP,@"Ip",@"任务标识",@"UserID",TASKGUID,@"TaskGuid",dataType,@"DataType",_loginAccount,@"LoginAccount",_bhList[j][@"Bh"],@"Symbol",totalVolume,@"Volume",@"0",@"StopLoss",@"0",@"TakeProfit",@"iPhone",@"Comment", nil];
-                [_webRequest webRequestWithDataDic:_userDic requestType:kRequestTypeSetData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
-                    if (error!=nil) {  [self alertWithTitle:[NSString stringWithFormat:@"%@",error] cancelButtonTitle:@"确定" otherButtonTitle:nil]; }else{
-                        NSString *resultString = [self getResultStringFromOperation:(NSData *)responseObject];
-                        if (![resultString hasPrefix:@"{\"Comment\""]) {//判断买入成功是否有数据返回
-                            [self alertWithTitle:resultString cancelButtonTitle:@"确定" otherButtonTitle:nil];
-                        }else{
-                            [self getDataFromWebForPosi];
-                            if (_isShowAlertView)
-                                [self showAlert:@"反向开仓成功"];
-                        }
-                    }
-                    [_activity stopAnimating];
-                    [self buttonCanTouch];//button可以被点击
-                }];
-            }else{  [self alertWithTitle:resultString cancelButtonTitle:@"确定" otherButtonTitle:nil]; }
-        }
-        [self buttonCanTouch];
-        [_activity stopAnimating];
-    }];
-}*/
 #pragma mark 买入后订单页面
 - (void)createPositionView{
     //盈亏
@@ -1303,64 +1178,6 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
     HistoryOrderViewController* view1 = [[HistoryOrderViewController alloc]init];
     [self.navigationController pushViewController:view1 animated:YES];
 }
-#pragma mark 全部清仓点击事件
-/**
--(void)allSellbuttonClick{
-    BOOL login = [[NSUserDefaults standardUserDefaults] boolForKey:@"login"];
-    if (!login) {//登录前
-        [self alertWithTitle:@"请先登录" cancelButtonTitle:@"取消" otherButtonTitle:@"登录"];
-    }else{
-        if (_tableViewDataArray.count>0) {
-            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"是否全部清仓？" preferredStyle:UIAlertControllerStyleAlert];
-            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:nil];
-            [alertController addAction:cancelAction];
-            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {//点击进行全部清仓
-                [_activity startAnimating];
-                NSMutableArray *arr = [NSMutableArray array];
-                NSMutableArray* dingdanArray = [NSMutableArray array];
-                int j = [[[NSUserDefaults standardUserDefaults] objectForKey:@"xuanzexiangmu"] intValue];//现在选择的商品
-                for (holdPositionModel* model in _tableViewDataArray) {
-                    if ([model.name isEqualToString:_nameDic[_bhList[j][@"Bh"]]]) {//如果持仓界面和现在选择的商品名称相同，则统计订单编号
-                        [arr addObject:[NSString stringWithFormat:@"%@", model.OrderNumber]];
-                        [dingdanArray addObject:model];
-                    }
-                }
-                if (dingdanArray.count == 0) {
-                    [self showAlert:@"没有在仓订单"];
-                    return ;
-                }
-                NSString *orderNumbers = [arr componentsJoinedByString:@","];
-                NSMutableDictionary *dataDic = [NSMutableDictionary dictionaryWithObjectsAndKeys:_iPhoneID,@"DriverID",_iPhoneIP,@"Ip",TASKGUID,@"TaskGuid",_loginAccount,@"LoginAccount",@"CloseOrderS",@"DataType",orderNumbers,@"OrderNumberS",nil];
-                [_webRequest webRequestWithDataDic:dataDic requestType:kRequestTypeSetData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
-                    if (error!=nil) {    }else{
-                        [_tableViewDataArray removeObjectsInArray:dingdanArray];
-                        [_tableView reloadData];
-                        NSString *resultString = [self getResultStringFromOperation:(NSData *)responseObject];
-                        if ([resultString isEqualToString:@"True"]) {
-//                            _positionVolume = 0;
-                            _numberLabel.text = @"0";
-                            _duoOrKongLabel.text = @"";
-                            _shouyiLabel.text = @"0";
-                            [self updateWidthOfVolume:_numberLabel.text];
-                            [_bearishBtn setTitle:BUYLESS forState:UIControlStateNormal];
-                            [_bullishBtn setTitle:BUYMORE forState:UIControlStateNormal];
-                            if (_isShowAlertView) {
-                                [self showAlert:@"清仓成功"];
-                            }
-                        }else{
-                            [self alertWithTitle:@"全部清仓失败" cancelButtonTitle:@"关闭" otherButtonTitle:nil];
-                        }
-                    }
-                    [_activity stopAnimating];
-                }];
-            }];
-            [alertController addAction:okAction];
-            [self presentViewController:alertController animated:YES completion:nil];
-        }else{
-            [self alertWithTitle:@"操作失败，请确认您已有订单" cancelButtonTitle:@"确定" otherButtonTitle:nil];
-        }
-    }
-}*/
 #pragma mark 创建持仓列表
 - (void)creataPositionTableView{
     _tableView = [[UITableView alloc]initWithFrame:CGRectMake(WIDTH, CGRectGetMaxY(_lineLabel.frame)+2, WIDTH, HEIGHT-CGRectGetMaxY(_lineLabel.frame)-64) style:UITableViewStylePlain];
@@ -1415,59 +1232,14 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
 - (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString* cellId = @"cell";
     RootTableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:cellId];
-    if (cell==nil) {
+    if (cell == nil) {
         cell = [[RootTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellId];
     }
     [cell.buyMoreOrLess setTextColor:[UIColor whiteColor]];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    cell.sellButton.tag = indexPath.row;
-//    [cell.sellButton addTarget:self action:@selector(sellButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     [cell config:_tableViewDataArray[indexPath.row]];
     return cell;
 }
-#pragma mark 单笔清仓
-/**
-- (void)sellButtonClick:(UIButton *)sender{
-    sender.enabled = NO;
-    [sender setTitleColor:[UIColor colorWithRed:199/255.0 green:166/255.0 blue:114/255.0 alpha:1.0] forState:UIControlStateNormal];
-    RootTableViewCell *cell = (RootTableViewCell *)[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:sender.tag inSection:0]];
-    NSMutableDictionary *dataDic = [NSMutableDictionary dictionaryWithObjectsAndKeys:_iPhoneID,@"DriverID",_iPhoneIP,@"Ip",TASKGUID,@"TaskGuid",_loginAccount,@"LoginAccount",@"CloseOrder",@"DataType",cell.OrderNumber,@"OrderNumber",cell.Volume,@"Volume",nil];
-    [_webRequest webRequestWithDataDic:dataDic requestType:kRequestTypeSetData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
-        if (error!=nil) {        }else{
-            NSString *resultString = [self getResultStringFromOperation:(NSData *)responseObject];
-            if ([resultString isEqualToString:@"True"]) {
-//                _positionVolume -=[cell.Volume intValue];
-                if (_isShowAlertView) {
-                     [self showAlert:@"平仓成功"];
-                }
-                int j = [[[NSUserDefaults standardUserDefaults] objectForKey:@"xuanzexiangmu"] intValue];
-                int num = 0;
-                for (holdPositionModel* model in _tableViewDataArray) {
-                    if ([model.name isEqualToString:_nameDic[_bhList[j][@"Bh"]]]) {
-                        num++;//查找持仓界面有多少个被选择的商品项目
-                    }
-                }
-                num--;
-                if (num== 0) {//如果已经没有这个持仓，则主界面按钮变成看多、看空
-                    [_bullishBtn setTitle:BUYMORE forState:UIControlStateNormal];
-                    [_bearishBtn setTitle:BUYLESS forState:UIControlStateNormal];
-                    [_duoOrKongLabel setText:@""];
-                    CGRect rect = _numberLabel.frame;
-                    rect.size.width = 10;
-                    _numberLabel.frame = rect;
-                }
-                _numberLabel.text = [NSString stringWithFormat:@"%d",([_numberLabel.text intValue] - [cell.Volume intValue])];
-                [self updateWidthOfVolume:_numberLabel.text];
-                [_tableViewDataArray removeObjectAtIndex:sender.tag];
-                [_tableView reloadData];
-            } else {
-                [self alertWithTitle:@"平仓失败" cancelButtonTitle:@"关闭" otherButtonTitle:nil];
-            }
-        }
-        sender.enabled = YES;
-        [sender setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    }];
-}*/
 #pragma mark tableView的代理返回cell高度和个数
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{ return _tableViewDataArray.count; }
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{ return 60;}
@@ -1486,40 +1258,23 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
     }
 }
 #pragma mark 设置点击事件
-- (void)settingBtnClick{
-//    self.navigationItem.leftBarButtonItem.image = [UIImage imageNamed:@"guanbi_"];
-//    self.navigationItem.leftBarButtonItem.tintColor = [UIColor whiteColor];
-    if (_isOut == NO) {
-        _isOut = !_isOut;
-        [UIView animateWithDuration:0.5 animations:^{
-            CGRect rect = _settingView.frame;
-            rect.origin.y = _isOut ?  0 : -HEIGHT;
-            _settingView.frame = rect;
-        }];
-    }else {
-        _isOut = !_isOut;
-//        int i = [[[NSUserDefaults standardUserDefaults] objectForKey:@"xuanzexiangmu"] intValue];
-//        [_nameLab setTitle:_bhList[i][@"Name"] forState:UIControlStateNormal];
-//        [self getDataFromWebForPosi];
-        [UIView animateWithDuration:0.5 animations:^{
-            CGRect rect = _settingView.frame;
-            rect.origin.y = _isOut ?  0 : -HEIGHT;
-            _settingView.frame = rect;
-        }];
-        
-//        self.navigationItem.leftBarButtonItem.image = [UIImage imageNamed:@"root_setting"];
-//        self.navigationItem.leftBarButtonItem.tintColor = [UIColor whiteColor];
-        int num = [[[NSUserDefaults standardUserDefaults] objectForKey:@"jiaoyishuliang"] intValue];
-        NSString *aaa = [NSString stringWithFormat:@"%d",num+1];
-        NSMutableAttributedString *str = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"委托 %@ 手",aaa]];
-        [str addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor] range:NSMakeRange(0,2)];
-        [str addAttribute:NSForegroundColorAttributeName value:GLODENCOLOR range:NSMakeRange(3,aaa.length)];
-        [str addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor] range:NSMakeRange(4+aaa.length,1)];
-        [str addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:12.0] range:NSMakeRange(0, 2)];
-        [str addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:20.0] range:NSMakeRange(3, aaa.length)];
-        [str addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:12.0] range:NSMakeRange(4+aaa.length, 1)];
-        _delegateNumberLabel.attributedText = str;
-    }
+- (void)chooseDelegateNum{
+    _isOut = !_isOut;
+    [UIView animateWithDuration:0.5 animations:^{
+        CGRect rect = _settingView.frame;
+        rect.origin.y = _isOut ?  0 : -HEIGHT;
+        _settingView.frame = rect;
+    }];
+    int num = [[[NSUserDefaults standardUserDefaults] objectForKey:@"jiaoyishuliang"] intValue];
+    NSString *aaa = [NSString stringWithFormat:@"%d",num+1];
+    NSMutableAttributedString *str = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"委托 %@ 手",aaa]];
+    [str addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor] range:NSMakeRange(0,2)];
+    [str addAttribute:NSForegroundColorAttributeName value:GLODENCOLOR range:NSMakeRange(3,aaa.length)];
+    [str addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor] range:NSMakeRange(4+aaa.length,1)];
+    [str addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:12.0] range:NSMakeRange(0, 2)];
+    [str addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:20.0] range:NSMakeRange(3, aaa.length)];
+    [str addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:12.0] range:NSMakeRange(4+aaa.length, 1)];
+    _delegateNumberLabel.attributedText = str;
 }
 
 #pragma mark 个人中心按钮点击事件
@@ -1652,4 +1407,5 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
     _numberLabel.frame = CGRectMake(CGRectGetMaxX(_duoOrKongLabel.frame)+5, CGRectGetMaxY(_duoOrKongLabel.frame)-18, numberLabelsize.width, _numberLabel.frame.size.height);
     _shou.frame = CGRectMake(CGRectGetMaxX(_numberLabel.frame), _numberLabel.frame.origin.y+5, _shou.frame.size.width, _shou.frame.size.height);
 }
+
 @end

@@ -64,14 +64,7 @@
         timelabel.textColor = GLODENCOLOR;
         [self addSubview:timelabel];
     }
-    _priceLabel = [[UILabel alloc] init];
-    _priceLabel.textColor = [UIColor blackColor];
-    _priceLabel.backgroundColor = GLODENCOLOR;
-    _priceLabel.textAlignment = NSTextAlignmentCenter;
-    _priceLabel.layer.cornerRadius = 2;
-    _priceLabel.layer.masksToBounds = YES;
-    _priceLabel.font = [UIFont systemFontOfSize:10.0];
-    [self addSubview:_priceLabel];
+
     //等高距离
     CGFloat equalHight = (self.frame.size.height - 40)/5.0;
     //等差价格
@@ -82,10 +75,18 @@
         priceLabel.textColor = [UIColor whiteColor];
         priceLabel.backgroundColor = [UIColor clearColor];
         priceLabel.font = [UIFont systemFontOfSize:10.0];
-        priceLabel.text = [NSString stringWithFormat:@"%.2f",_maxPriceForLightningView-num*i];
+        priceLabel.text = [NSString stringWithFormat:@"%.2f",_maxPriceForLightningView - num*i];
         priceLabel.tag = 10+(5-i);
         [self addSubview:priceLabel];
     }
+    _priceLabel = [[UILabel alloc] init];
+    _priceLabel.textColor = [UIColor blackColor];
+    _priceLabel.backgroundColor = GLODENCOLOR;
+    _priceLabel.textAlignment = NSTextAlignmentCenter;
+    _priceLabel.layer.cornerRadius = 2;
+    _priceLabel.layer.masksToBounds = YES;
+    _priceLabel.font = [UIFont systemFontOfSize:10.0];
+    [self addSubview:_priceLabel];
 }
 
 - (void)refreshPoint:(NSMutableArray *)pointArray{
@@ -101,7 +102,7 @@
     for (int i = (int)_pointArray.count-1; i>=0; i--) {
         NSValue* va = _pointArray[i];
         CGPoint pt = [va CGPointValue];
-        if (pt.x<5) {
+        if (pt.x < 5) {
             [_pointArray removeObject:va];
         }
     }
@@ -120,7 +121,12 @@
     //线圆角
     CGContextSetLineCap(ctx, kCGLineCapRound);
     //设置线的颜色
-    [[UIColor colorWithRed:232/255.0 green:192/255.0 blue:133/255.0 alpha:1.0] setStroke];
+    if (_price >= 0) {
+        [[UIColor redColor] setStroke];
+    }else{
+        [[UIColor greenColor] setStroke];
+    }
+//    [[UIColor colorWithRed:232/255.0 green:192/255.0 blue:133/255.0 alpha:1.0] setStroke];
     //画线
     CGContextStrokePath(ctx);
     //取最新点
