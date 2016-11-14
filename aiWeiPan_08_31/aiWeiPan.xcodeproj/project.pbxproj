@@ -528,6 +528,12 @@
 					2B6072661BA93D5C0099C3E5 = {
 						CreatedOnToolsVersion = 6.4;
 						DevelopmentTeam = A9HY9M4Q78;
+						ProvisioningStyle = Manual;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 0;
+							};
+						};
 					};
 					2B60727F1BA93D5C0099C3E5 = {
 						CreatedOnToolsVersion = 6.4;
@@ -765,6 +771,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Shanghai silver metal materials Co., Ltd. (A9HY9M4Q78)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Shanghai silver metal materials Co., Ltd. (A9HY9M4Q78)";
+				DEVELOPMENT_TEAM = A9HY9M4Q78;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/EjinrongTests",
@@ -789,6 +796,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Shanghai silver metal materials Co., Ltd. (A9HY9M4Q78)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Shanghai silver metal materials Co., Ltd. (A9HY9M4Q78)";
+				DEVELOPMENT_TEAM = A9HY9M4Q78;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/EjinrongTests",
