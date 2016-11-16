@@ -69,6 +69,7 @@
 		743D83681BD8772E00A8DE9E /* RootTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 743D83671BD8772E00A8DE9E /* RootTableViewCell.m */; };
 		743D836B1BD8792600A8DE9E /* holdPositionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 743D836A1BD8792600A8DE9E /* holdPositionModel.m */; };
 		747307AE1BD7A1B200194E24 /* CertificateCheckViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 747307AD1BD7A1B200194E24 /* CertificateCheckViewController.m */; };
+		74B219111DDBF157000ED289 /* WebController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B219101DDBF157000ED289 /* WebController.m */; };
 		74B5FD8A1BC8A5B600EBEA9C /* UserDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B5FD881BC8A5B600EBEA9C /* UserDetailViewController.m */; };
 		74F46CBB1D6694B9002935D0 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 74F46CB81D6694B9002935D0 /* GCDAsyncUdpSocket.m */; };
 		74F46CBC1D6694B9002935D0 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 74F46CB91D6694B9002935D0 /* GCDAsyncSocket.m */; };
@@ -195,6 +196,8 @@
 		743D836A1BD8792600A8DE9E /* holdPositionModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = holdPositionModel.m; sourceTree = "<group>"; };
 		747307AC1BD7A1B200194E24 /* CertificateCheckViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CertificateCheckViewController.h; sourceTree = "<group>"; };
 		747307AD1BD7A1B200194E24 /* CertificateCheckViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CertificateCheckViewController.m; sourceTree = "<group>"; };
+		74B2190F1DDBF157000ED289 /* WebController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebController.h; sourceTree = "<group>"; };
+		74B219101DDBF157000ED289 /* WebController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebController.m; sourceTree = "<group>"; };
 		74B5FD871BC8A5B600EBEA9C /* UserDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserDetailViewController.h; sourceTree = "<group>"; };
 		74B5FD881BC8A5B600EBEA9C /* UserDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserDetailViewController.m; sourceTree = "<group>"; };
 		74F46CB71D6694B9002935D0 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
@@ -401,6 +404,8 @@
 				3B06445C1BF227D700892205 /* HistoryOrderViewController.m */,
 				2B6072901BA93DC00099C3E5 /* RootViewController.h */,
 				2B6072911BA93DC00099C3E5 /* RootViewController.m */,
+				74B2190F1DDBF157000ED289 /* WebController.h */,
+				74B219101DDBF157000ED289 /* WebController.m */,
 			);
 			name = root;
 			sourceTree = "<group>";
@@ -630,6 +635,7 @@
 				740E44761BF2E05A009057BA /* HistoryOrderModel.m in Sources */,
 				3B0644561BF1C74900892205 /* GDataXMLNode.m in Sources */,
 				695A26921C28E1AA00212BD4 /* AFURLResponseSerialization.m in Sources */,
+				74B219111DDBF157000ED289 /* WebController.m in Sources */,
 				74B5FD8A1BC8A5B600EBEA9C /* UserDetailViewController.m in Sources */,
 				695A26901C28E1AA00212BD4 /* AFSecurityPolicy.m in Sources */,
 				69A8AC6C1BCFB24500742832 /* CreateGestureViewController.m in Sources */,

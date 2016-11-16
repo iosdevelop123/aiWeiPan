@@ -15,6 +15,7 @@
 #import "holdPositionModel.h"
 #import "GCDAsyncSocket.h"
 #import "SingleSocket.h"
+#import "WebController.h"
 #import "PrefixHeader.pch"
 
 
@@ -153,8 +154,10 @@ static NSString* const TASKGUID = @"ab8495db-3a4a-4f70-bb81-8518f60ec8bf";
 }
 #pragma mark ****** 恒德8.0 ios手机端下载以及使用说明
 -(void)openBrowser {
+    WebController* vc = [[WebController alloc]init];
+    [self.navigationController pushViewController:vc animated:YES];
     //打开浏览器
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://xidue.com/hd/hd.html"]];
+//    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://xidue.com/hd/hd.html"]];
 }
 #pragma mark ****** socket单例创建
 -(void)createSocket{
