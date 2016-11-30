@@ -533,7 +533,7 @@
 					2B6072661BA93D5C0099C3E5 = {
 						CreatedOnToolsVersion = 6.4;
 						DevelopmentTeam = A9HY9M4Q78;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Push = {
 								enabled = 0;
@@ -776,8 +776,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Shanghai silver metal materials Co., Ltd. (A9HY9M4Q78)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Shanghai silver metal materials Co., Ltd. (A9HY9M4Q78)";
-				DEVELOPMENT_TEAM = A9HY9M4Q78;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/EjinrongTests",
@@ -785,12 +785,12 @@
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				"HEADER_SEARCH_PATHS[arch=*]" = /usr/include/libxml2;
 				INFOPLIST_FILE = Ejinrong/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ejinrong.aiweipan;
 				PRODUCT_NAME = aiWeiPan;
-				PROVISIONING_PROFILE = "bf32ddf8-0a05-44db-b5c2-369b55d1e8d2";
-				PROVISIONING_PROFILE_SPECIFIER = aiWeiPan;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -801,20 +801,20 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Shanghai silver metal materials Co., Ltd. (A9HY9M4Q78)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Shanghai silver metal materials Co., Ltd. (A9HY9M4Q78)";
-				DEVELOPMENT_TEAM = A9HY9M4Q78;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/EjinrongTests",
 				);
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = Ejinrong/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ejinrong.aiweipan;
 				PRODUCT_NAME = aiWeiPan;
-				PROVISIONING_PROFILE = "bf32ddf8-0a05-44db-b5c2-369b55d1e8d2";
-				PROVISIONING_PROFILE_SPECIFIER = aiWeiPan;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;

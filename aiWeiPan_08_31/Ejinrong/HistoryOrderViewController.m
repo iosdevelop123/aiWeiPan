@@ -212,7 +212,7 @@
     _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, WIDTH, HEIGHT) style:UITableViewStylePlain];
     _tableView.delegate = self;
     _tableView.dataSource = self;
-    _tableView.bounces = NO;
+    _tableView.bounces = YES;
     _tableView.backgroundColor = [UIColor blackColor];
     _tableView.tableFooterView = [UIView new];
     _tableView.separatorInset = UIEdgeInsetsMake(0, 10, 0, 10);

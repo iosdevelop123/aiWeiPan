@@ -123,7 +123,7 @@
     UIButton *zhuxiaoButton=[UIButton buttonWithType:UIButtonTypeSystem];
     zhuxiaoButton.frame=CGRectMake(20, HEIGHT*0.36+4*HEIGHT*0.09+HEIGHT*0.09, WIDTH-20*2, HEIGHT*0.08);
     [zhuxiaoButton setTitle:@"退出登录" forState:UIControlStateNormal];
-    [zhuxiaoButton addTarget:self action:@selector(zhuxiaoBtnClick) forControlEvents:UIControlEventTouchUpInside];
+    [zhuxiaoButton addTarget:self action:@selector(logoutBtnClick) forControlEvents:UIControlEventTouchUpInside];
     zhuxiaoButton.layer.cornerRadius=HEIGHT*0.01;
     zhuxiaoButton.titleLabel.font=[UIFont systemFontOfSize:18.0];
     [zhuxiaoButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -168,32 +168,11 @@
     _nickNameLabel.text = Nickname;
 }
 #pragma mark ****** 点击注销
-- (void)zhuxiaoBtnClick{
+- (void)logoutBtnClick{
     [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"login"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"logout" object:nil];
     [self.navigationController popViewControllerAnimated:YES];
      [_delegate setPopViewControoler];
-//    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"要否退出登录" message:nil preferredStyle:UIAlertControllerStyleAlert];
-//    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
-//    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"退出登录" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-//        [_delegate setPopViewControoler];
-//        [_activity startAnimating];
-//        NSString* driverId = [[NSUserDefaults standardUserDefaults] objectForKey:@"DRIVERID"];
-//        NSMutableDictionary *userDic = [[NSMutableDictionary alloc] initWithObjectsAndKeys:driverId,@"DriverID",TASKGUID,@"TaskGuid",@"DriverLoginOut",@"DataType", nil];
-//        WebRequest *webRequest = [[WebRequest alloc] init];
-//        [webRequest webRequestWithDataDic:userDic requestType:kRequestTypeSetData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
-//            if (error!=nil) {
-//                NSLog(@"错误提示:%@",error);
-//            }else{
-//                [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"login"];
-//                [self.navigationController popViewControllerAnimated:YES];
-//            }
-//            [_activity stopAnimating];
-//        }];
-//
-//    }];
-//    [alertController addAction:cancelAction];
-//    [alertController addAction:okAction];
-//    [self presentViewController:alertController animated:YES completion:nil];
 }
 #pragma mark ****** 点击更换头像事件
 - (void)enterToUserDetail:(UIButton*)sender{

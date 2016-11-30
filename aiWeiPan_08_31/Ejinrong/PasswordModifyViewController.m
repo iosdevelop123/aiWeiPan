@@ -165,8 +165,10 @@
         [web webRequestWithDataDic:parameters requestType:kRequestTypeSetData completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
             NSString* resultString = [self getResultStringFromOperation:responseObject];
             if (![resultString isEqualToString:@"账号密码修改成功"]) {
-                UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@"提示" message:resultString delegate:self cancelButtonTitle:@"关闭" otherButtonTitles:nil, nil];
-                [alert show];
+                UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"提示" message:resultString preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"关闭" style:UIAlertActionStyleCancel handler:nil];
+                [alert addAction:cancelAction];
+                [self presentViewController:alert animated:YES completion:nil];
             }else{
                 [[NSUserDefaults standardUserDefaults] setObject:userDic forKey:@"userDic"];
                 [_activity stopAnimating];
@@ -180,8 +182,10 @@
         }];
     }else {
         [_activity  stopAnimating];
-        UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"两次输入必须一致" delegate:self cancelButtonTitle:@"关闭" otherButtonTitles:nil, nil];
-        [alert show];
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"提示" message:@"两次输入必须一致" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"关闭" style:UIAlertActionStyleCancel handler:nil];
+        [alert addAction:cancelAction];
+        [self presentViewController:alert animated:YES completion:nil];
     }
 }
 - (void)back{

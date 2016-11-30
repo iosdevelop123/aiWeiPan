@@ -121,8 +121,6 @@ static NSString* const kBuyerAppUpdateUrl = @"https://itunes.apple.com/cn/app/he
     UIAlertAction *otherAction = [UIAlertAction actionWithTitle:@"现在升级"style:UIAlertActionStyleDestructive handler:^(UIAlertAction*action) {
         NSURL *url = [NSURL URLWithString:kBuyerAppUpdateUrl];
         [[UIApplication sharedApplication]openURL:url];
-//        NSString *str = [NSString stringWithFormat:@"itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=%@", @"1157853548"];
-//        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]];
     }];
     
     // Add the actions.
